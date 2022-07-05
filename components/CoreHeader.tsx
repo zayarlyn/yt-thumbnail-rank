@@ -12,7 +12,7 @@ const CoreHeader = () => {
             <a>ranking</a>
           </Link>
         </div>
-        <nav>sign in</nav>
+        <nav><Link href='/signin'><a>sing in</a></Link></nav>
       </div>
     </header>
   );
