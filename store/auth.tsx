@@ -21,9 +21,8 @@ const auth = ({ children }: { children: React.ReactNode }) => {
     return unsub;
   }, []);
 
-  console.log('object', user, user && user !== 'unknown');
   return (
-    <ctx.Provider value={{ isAuthenticated: user && user !== 'unknown' } as AuthStoreType}>
+    <ctx.Provider value={{ isAuthenticated: user } as AuthStoreType}>
       {children}
     </ctx.Provider>
   );
