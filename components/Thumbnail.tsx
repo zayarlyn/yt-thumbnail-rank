@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Image from 'next/image';
 
 const cn = (...classes: string[]) => {
@@ -5,6 +6,8 @@ const cn = (...classes: string[]) => {
 };
 
 const Thumbnail = ({ url, active }: { url: string; active?: boolean }) => {
+  const [points, setPoints] = useState(0);
+
   return (
     <div
       className={cn(
