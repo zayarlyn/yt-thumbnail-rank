@@ -9,7 +9,7 @@ export default function Document() {
           rel='stylesheet'
         />
       </Head>
-      <body className='font-inter'>
+      <body className='font-inter min-h-screen'>
         <Main />
         <NextScript />
       </body>

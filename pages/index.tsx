@@ -53,11 +53,11 @@ const Home: NextPage = () => {
         <title>Create Next App</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      {next >= 7 ? (
-        <>
+      {next <= 7 ? (
+        <Box as='main' maxW='60vh' px={4}>
           <Heading fontSize='3xl'>Which one draw your attention?</Heading>
 
-          <Grid as='main' rowGap={12} mt={6}>
+          <Grid flexGrow={1} rowGap={12} mt={6}>
             <Thumbnail
               active
               dispatch={dispatch}
@@ -71,10 +71,10 @@ const Home: NextPage = () => {
               url={thumbnails[right]}
             />
           </Grid>
-        </>
+        </Box>
       ) : (
         <Text w='40vh' mt='30vh' textAlign='center'>
-          no more new thumbnails for now. <button>submit</button> your own or touch some grass
+          No more thumbnails for now. <button>submit</button> your own or touch some grass
         </Text>
       )}
     </Box>

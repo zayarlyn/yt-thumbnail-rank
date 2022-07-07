@@ -11,12 +11,9 @@ interface ThumbNail {
 }
 
 const Thumbnail = ({ url, active, dispatch, type }: ThumbNail) => {
-  console.log(url);
-
   return (
     <AspectRatio
-      w='60vh'
-      cursor='pointer'
+      cursor={active ? 'pointer' : ''}
       outline='3px solid'
       position='relative'
       transitionDuration='300ms'

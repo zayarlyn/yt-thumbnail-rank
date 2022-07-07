@@ -6,6 +6,10 @@ export const actionCodeSettings = {
   handleCodeInApp: true,
 };
 
+export const parseVideoId = (url: string) => {
+  return url.match(/(?<=v=).*/)?.[0];
+};
+
 export const isAuthenticated = () => {
   return getAuth(app).currentUser;
 };

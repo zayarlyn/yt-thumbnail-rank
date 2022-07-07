@@ -6,7 +6,6 @@ import { Link as Clink } from '@chakra-ui/react';
 
 const CoreHeader = () => {
   const { isAuthenticated } = useAuthStore() as AuthStoreType;
-  // console.log(isAuthenticated);
 
   return (
     <header>
