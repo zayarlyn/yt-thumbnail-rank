@@ -9,19 +9,24 @@ import {
   useDisclosure,
   Stack,
   Box,
-  FormControl,
   FormLabel,
+  FormControl,
   Input,
   DrawerBody,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { parseVideoId } from '../firebaseUtils';
+import { parseVideoId, uploadThumbnail } from '../firebaseUtils';
 import Thumbnail from './Thumbnail';
 
 const RightDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [vId, setVId] = useState<undefined | string>('');
   const [url, setUrl] = useState('');
-  const [vId, setVId] = useState('');
+
+  const handleUpload = () => {
+    uploadThumbnail(url);
+  };
 
   return (
     <>
@@ -49,15 +54,18 @@ const RightDrawer = () => {
           <DrawerBody>
             <Stack mt={8} spacing={12}>
               <Box>
-                <FormLabel htmlFor='video_link'>Youtube video Link</FormLabel>
-                <Input
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  id='video_link'
-                  placeholder='Please enter video link'
-                />
+                <FormControl isInvalid={vId === undefined}>
+                  <FormLabel htmlFor='video_link'>Youtube video Link</FormLabel>
+                  <Input
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    id='video_link'
+                    placeholder='Please enter video link'
+                  />
+                  <FormErrorMessage>link is invalid</FormErrorMessage>
+                </FormControl>
                 <Button
-                  onClick={() => setVId(parseVideoId(url) ?? '')}
+                  onClick={() => setVId(parseVideoId(url))}
                   mt={4}
                   bg='teal.300'
                   w='full'
@@ -69,7 +77,13 @@ const RightDrawer = () => {
               {vId && (
                 <Box>
                   <Thumbnail url={`https://img.youtube.com/vi/${vId}/hqdefault.jpg`} />
-                  <Button mt={8} bg='teal.300' w='full' _hover={{ bgColor: 'teal.200' }}>
+                  <Button
+                    onClick={handleUpload}
+                    mt={8}
+                    bg='teal.300'
+                    w='full'
+                    _hover={{ bgColor: 'teal.200' }}
+                  >
                     Upload
                   </Button>
                 </Box>

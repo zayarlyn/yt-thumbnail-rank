@@ -32,9 +32,9 @@ export interface IndiceAction {
 const indiceReducer = ({ left, right, next }: State, action: IndiceAction) => {
   switch (action.type) {
     case 'LEFT':
-      return { left: next, right, next: next + 1 };
-    case 'RIGHT':
       return { left, right: next, next: next + 1 };
+    case 'RIGHT':
+      return { left: next, right, next: next + 1 };
     default:
       return { left, right, next };
   }

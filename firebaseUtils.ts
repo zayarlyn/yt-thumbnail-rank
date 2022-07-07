@@ -1,5 +1,6 @@
 import { signOut, getAuth } from 'firebase/auth';
-import { app } from './firebaseconfig';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { app, db } from './firebaseconfig';
 
 export const actionCodeSettings = {
   url: 'http://localhost:3000/signin',
@@ -20,4 +21,8 @@ export const signOutUser = async () => {
 
 export const isSignInLink = (link: string) => {
   return link.startsWith('http://localhost:3000/signin?apiKey');
+};
+
+export const uploadThumbnail = async (url: string, by?: string) => {
+  return addDoc(collection(db, 'thumbnails'), { url, at: serverTimestamp(), ...(by && { by }) });
 };
