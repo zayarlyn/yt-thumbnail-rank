@@ -1,22 +1,36 @@
-import { useState } from 'react';
 import Image from 'next/image';
+import { AspectRatio } from '@chakra-ui/react';
+import React from 'react';
+import { IndiceAction, IndiceActionType } from '../pages';
 
-const cn = (...classes: string[]) => {
-  return classes.join(' ');
-};
+interface ThumbNail {
+  url: string;
+  active?: boolean;
+  dispatch?: React.Dispatch<IndiceAction>;
+  type?: IndiceActionType;
+}
 
-const Thumbnail = ({ url, active }: { url: string; active?: boolean }) => {
-  const [points, setPoints] = useState(0);
+const Thumbnail = ({ url, active, dispatch, type }: ThumbNail) => {
+  console.log(url);
 
   return (
-    <div
-      className={cn(
-        'relative aspect-video w-[60vh] outline duration-300',
-        active ? 'hover:scale-110 active:scale-100' : ''
-      )}
+    <AspectRatio
+      w='60vh'
+      cursor='pointer'
+      outline='3px solid'
+      position='relative'
+      transitionDuration='300ms'
+      _hover={{ transform: active ? 'scale(1.05)' : '' }}
+      _active={{ transform: active ? 'scale(.95)' : '' }}
+      ratio={16 / 9}
     >
-      <Image src={url} layout='fill' objectFit='cover' />
-    </div>
+      <Image
+        onClick={() => type && dispatch?.({ type })}
+        src={url}
+        layout='fill'
+        objectFit='cover'
+      />
+    </AspectRatio>
   );
 };
 

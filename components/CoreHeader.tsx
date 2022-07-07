@@ -1,22 +1,26 @@
 import Link from 'next/link';
 import { AuthStoreType, useAuthStore } from '../store/auth';
 import { signOutUser } from '../firebaseUtils';
+import { Box } from '@chakra-ui/react';
+import { Link as Clink } from '@chakra-ui/react';
 
 const CoreHeader = () => {
   const { isAuthenticated } = useAuthStore() as AuthStoreType;
-console.log(isAuthenticated);
+  // console.log(isAuthenticated);
 
   return (
     <header>
-      <div className='flex-x mx-auto w-11/12 py-4 text-lg'>
-        <div className='flex gap-4'>
+      <Box display='flex' justifyContent='space-between' mx='auto' w='90%' py={4} fontSize='lg'>
+        <Box display='flex' gap={4}>
           <Link href='/' scroll={false}>
-            <a className='font-bold'>YT</a>
+            <Clink _hover={{ textDecoration: 'none' }} fontWeight='bold'>
+              YT
+            </Clink>
           </Link>
           <Link href='/ranking'>
-            <a>ranking</a>
+            <Clink>ranking</Clink>
           </Link>
-        </div>
+        </Box>
         <nav>
           {isAuthenticated ? (
             <button onClick={signOutUser}>sign out</button>
@@ -26,7 +30,7 @@ console.log(isAuthenticated);
             </Link>
           )}
         </nav>
-      </div>
+      </Box>
     </header>
   );
 };

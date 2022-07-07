@@ -1,3 +1,4 @@
+import { Box, Grid, GridItem } from '@chakra-ui/react';
 import React from 'react';
 import Thumbnail from '../components/Thumbnail';
 
@@ -24,19 +25,25 @@ const videos = [
 
 const ranking = () => {
   return (
-    <main className='flex h-[calc(100vh-60px)] flex-col items-center overflow-y-scroll'>
-      <div className='w-[60vh] py-4 text-left text-lg'>
+    <Box
+      display='flex'
+      flexDir='column'
+      alignItems='center'
+      h='calc(100vh - 60px)'
+      overflowY='scroll'
+    >
+      <Box w='60vh' py={4} fontSize='lg'>
         <span>Top</span>
-        <select className='w-14 px-1 mx-2'>
+        <select className='mx-2 w-14 px-1'>
           {[5, 10, 15].map((i) => (
             <option>{i}</option>
           ))}
         </select>
         <span>thumbnail</span>
-      </div>
-      <main className='grid grow grid-rows-2 gap-y-8 text-lg'>
+      </Box>
+      <Grid as='main' flexGrow={1} fontSize='lg' rowGap={8}>
         {videos.map(({ url, charisma, video_url, owner_id }, i) => (
-          <div className='relative'>
+          <GridItem position='relative'>
             <Thumbnail url={url} />
             <ul className='pb-2 pt-5'>
               <li>
@@ -46,13 +53,24 @@ const ranking = () => {
                 submitted by <span className='font-semibold text-primary'>{owner_id}</span>
               </li>
             </ul>
-            <div className='absolute top-0 right-0 grid h-16 w-16 place-items-center bg-slate-400 text-4xl shadow-md'>
+            <Box
+              w={16}
+              h={16}
+              top={0}
+              right={0}
+              fontSize='4xl'
+              display='grid'
+              placeItems='center'
+              position='absolute'
+              shadow='lg'
+              bgColor='white'
+            >
               <span>{i + 1}</span>
-            </div>
-          </div>
+            </Box>
+          </GridItem>
         ))}
-      </main>
-    </main>
+      </Grid>
+    </Box>
   );
 };
 
