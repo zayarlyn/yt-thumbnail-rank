@@ -1,5 +1,13 @@
 import { signOut, getAuth } from 'firebase/auth';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  getDocs,
+  doc,
+  setDoc,
+  increment,
+} from 'firebase/firestore';
 import { app, db } from './firebaseconfig';
 
 export const actionCodeSettings = {
@@ -23,6 +31,32 @@ export const isSignInLink = (link: string) => {
   return link.startsWith('http://localhost:3000/signin?apiKey');
 };
 
-export const uploadThumbnail = async (url: string, by?: string) => {
-  return addDoc(collection(db, 'thumbnails'), { url, at: serverTimestamp(), ...(by && { by }) });
+export const uploadThumbnail = async (yt_link: string, by?: string) => {
+  return addDoc(collection(db, 'thumbnails'), {
+    yt_link,
+    at: serverTimestamp(),
+    pt: 0,
+    seen: 0,
+    ...(by && { by }),
+  });
 };
+
+export const fetchThumbnails = async () => {
+  const raw = await getDocs(collection(db, 'thumbnails'));
+  return raw.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+    at: doc.data().at.toMillis(),
+  })) as ThumbNail[];
+};
+
+export const incrementThumb = async (id: string) => {
+  return setDoc(doc(db, 'thumbnails', id), { pt: increment(1) }, { merge: true });
+};
+
+export interface ThumbNail {
+  id: string;
+  by?: string;
+  at: number;
+  yt_link: string;
+}

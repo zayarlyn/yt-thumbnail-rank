@@ -2,15 +2,23 @@ import Image from 'next/image';
 import { AspectRatio } from '@chakra-ui/react';
 import React from 'react';
 import { IndiceAction, IndiceActionType } from '../pages';
+import { incrementThumb } from '../firebaseUtils';
 
 interface ThumbNail {
+  id?: string;
   url: string;
   active?: boolean;
   dispatch?: React.Dispatch<IndiceAction>;
   type?: IndiceActionType;
 }
 
-const Thumbnail = ({ url, active, dispatch, type }: ThumbNail) => {
+const Thumbnail = ({ id, url, active, dispatch, type }: ThumbNail) => {
+  const handleClick = () => {
+    if (!type || !dispatch || !id) return;
+    dispatch({ type });
+    incrementThumb(id);
+  };
+
   return (
     <AspectRatio
       cursor={active ? 'pointer' : ''}
@@ -21,12 +29,7 @@ const Thumbnail = ({ url, active, dispatch, type }: ThumbNail) => {
       _active={{ transform: active ? 'scale(.95)' : '' }}
       ratio={16 / 9}
     >
-      <Image
-        onClick={() => type && dispatch?.({ type })}
-        src={url}
-        layout='fill'
-        objectFit='cover'
-      />
+      <Image onClick={handleClick} src={url} layout='fill' objectFit='cover' />
     </AspectRatio>
   );
 };

@@ -23,9 +23,15 @@ const RightDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [vId, setVId] = useState<undefined | string>('');
   const [url, setUrl] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleUpload = () => {
-    uploadThumbnail(url);
+  const handleUpload = async () => {
+    setLoading(true);
+    await uploadThumbnail(url);
+    setLoading(false);
+    setVId('');
+    setUrl('');
+    onClose();
   };
 
   return (
@@ -79,6 +85,7 @@ const RightDrawer = () => {
                   <Thumbnail url={`https://img.youtube.com/vi/${vId}/hqdefault.jpg`} />
                   <Button
                     onClick={handleUpload}
+                    isLoading={loading}
                     mt={8}
                     bg='teal.300'
                     w='full'
