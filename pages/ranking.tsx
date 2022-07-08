@@ -15,6 +15,8 @@ import {
 } from '@chakra-ui/react';
 import { StarIcon, TriangleUpIcon, ViewIcon } from '@chakra-ui/icons';
 import Thumbnail from '../components/Thumbnail';
+import { fetchThumbnails, TFType, ThumbNail } from '../firebaseUtils';
+import { NextPage } from 'next';
 
 const videos = [
   {
@@ -23,7 +25,7 @@ const videos = [
     view: 23,
     yt_link: 'www.youtube.com/watch?v=Otr3Up8wRn0',
     by: 'mira yoshi',
-    at: 2327439489,
+    at: 2327439493489,
   },
   {
     url: 'https://img.youtube.com/vi/sgZjbk9eH6g/hqdefault.jpg',
@@ -43,7 +45,7 @@ const videos = [
   },
 ];
 
-const ranking = () => {
+const ranking: NextPage<{ rankings: ThumbNail[] }> = ({ rankings }) => {
   return (
     <Box
       display='flex'
@@ -62,18 +64,19 @@ const ranking = () => {
         <span>thumbnail</span>
       </Box>
       <Grid as='main' w='90%' flexGrow={1} fontSize='lg' rowGap={16}>
-        {videos.map(({ url, by, at, pt, view, yt_link }, i) => {
+        {rankings.map(({ by, at, pt, seen, yt_link }, i) => {
           const d = new Date(at);
+          if (!seen || !pt) return null;
 
           return (
             <GridItem position='relative' borderRadius={5} p={3} borderWidth={1}>
-              <Thumbnail url={url} />
+              <Thumbnail v_link={yt_link} />
               <StatGroup className='pb-2 pt-5'>
                 <Stat>
                   <StatLabel>
                     Seen <ViewIcon />
                   </StatLabel>
-                  <StatNumber>{view}</StatNumber>
+                  <StatNumber>{seen}</StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>
@@ -85,12 +88,12 @@ const ranking = () => {
                   <StatLabel>
                     Rating <StatUpArrow />
                   </StatLabel>
-                  <StatNumber>{((pt * 100) / view).toFixed(2)}%</StatNumber>
+                  <StatNumber>{((pt * 100) / seen).toFixed(2)}%</StatNumber>
                 </Stat>
               </StatGroup>
               <Box mt={4} display='flex' justifyContent='space-between'>
                 <Text fontSize='sm'>
-                  submitted by <span className='font-semibold text-primary'>{by}</span>
+                  submitted by <span className='font-semibold text-primary'>{'by'}</span>
                 </Text>
                 <Flex fontSize={12}>
                   <Text>{d.toLocaleDateString()}</Text>
@@ -110,7 +113,8 @@ const ranking = () => {
                 placeItems='center'
                 position='absolute'
                 shadow='lg'
-                bgColor='white'
+                bgColor='black'
+                color='white'
               >
                 <span>{i + 1}</span>
               </Box>
@@ -123,3 +127,8 @@ const ranking = () => {
 };
 
 export default ranking;
+
+export async function getServerSideProps() {
+  const rankings = await fetchThumbnails({ type: TFType.RANK });
+  return { props: { rankings } };
+}

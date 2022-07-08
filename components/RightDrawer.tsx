@@ -21,7 +21,7 @@ import Thumbnail from './Thumbnail';
 
 const RightDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [vId, setVId] = useState<undefined | string>('');
+  const [isValidUrl, setIsValidUrl] = useState<undefined | string>('');
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -29,7 +29,7 @@ const RightDrawer = () => {
     setLoading(true);
     await uploadThumbnail(url);
     setLoading(false);
-    setVId('');
+    setIsValidUrl('');
     setUrl('');
     onClose();
   };
@@ -60,7 +60,7 @@ const RightDrawer = () => {
           <DrawerBody>
             <Stack mt={8} spacing={12}>
               <Box>
-                <FormControl isInvalid={vId === undefined}>
+                <FormControl isInvalid={isValidUrl === undefined}>
                   <FormLabel htmlFor='video_link'>Youtube video Link</FormLabel>
                   <Input
                     value={url}
@@ -71,7 +71,7 @@ const RightDrawer = () => {
                   <FormErrorMessage>link is invalid</FormErrorMessage>
                 </FormControl>
                 <Button
-                  onClick={() => setVId(parseVideoId(url))}
+                  onClick={() => setIsValidUrl(parseVideoId(url))}
                   mt={4}
                   bg='teal.300'
                   w='full'
@@ -80,9 +80,9 @@ const RightDrawer = () => {
                   Generate thumbnail
                 </Button>
               </Box>
-              {vId && (
+              {isValidUrl && (
                 <Box>
-                  <Thumbnail url={`https://img.youtube.com/vi/${vId}/hqdefault.jpg`} />
+                  <Thumbnail v_link={url} />
                   <Button
                     onClick={handleUpload}
                     isLoading={loading}

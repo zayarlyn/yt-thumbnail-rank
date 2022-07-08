@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import { AppInitialProps } from 'next/app';
 import { Box, Grid, Heading, Text } from '@chakra-ui/react';
 import Head from 'next/head';
-import { fetchThumbnails, ThumbNail, parseVideoId } from '../firebaseUtils';
+import { fetchThumbnails, ThumbNail, parseVideoId, TFType } from '../firebaseUtils';
 import Thumbnail from '../components/Thumbnail';
 
 const THUMBNAILS = [
@@ -65,14 +65,14 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
               id={thumbnails[left].id}
               dispatch={dispatch}
               type={IndiceActionType.LEFT}
-              url={`https://img.youtube.com/vi/${parseVideoId(thumbnails[left].yt_link)}/maxresdefault.jpg`}
+              v_link={thumbnails[left].yt_link}
             />
             <Thumbnail
               active
               id={thumbnails[right].id}
               dispatch={dispatch}
               type={IndiceActionType.RIGHT}
-              url={`https://img.youtube.com/vi/${parseVideoId(thumbnails[right].yt_link)}/maxresdefault.jpg`}
+              v_link={thumbnails[right].yt_link}
             />
           </Grid>
         </Box>
@@ -89,6 +89,6 @@ export default Home;
 //'https://img.youtube.com/vi/Zmjjx7n5toY/hqdefault.jpg'
 
 export async function getServerSideProps() {
-  const thumbnails = await fetchThumbnails();
+  const thumbnails = await fetchThumbnails({type: TFType.NORM});
   return { props: { thumbnails } };
 }

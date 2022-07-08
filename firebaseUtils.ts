@@ -7,6 +7,8 @@ import {
   doc,
   setDoc,
   increment,
+  query,
+  orderBy,
 } from 'firebase/firestore';
 import { app, db } from './firebaseconfig';
 
@@ -41,8 +43,12 @@ export const uploadThumbnail = async (yt_link: string, by?: string) => {
   });
 };
 
-export const fetchThumbnails = async () => {
-  const raw = await getDocs(collection(db, 'thumbnails'));
+export const fetchThumbnails = async ({ type }: { type: TFType }) => {
+  const q =
+    type === 'RANK'
+      ? query(collection(db, 'thumbnails'), orderBy('pt', 'desc'), orderBy('seen', 'desc'))
+      : query(collection(db, 'thumbnails'), orderBy('at', 'desc'));
+  const raw = await getDocs(q);
   return raw.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
@@ -60,7 +66,14 @@ export const incrementThumb = async (id: string, incre_pt = false) => {
 
 export interface ThumbNail {
   id: string;
-  by?: string;
   at: number;
   yt_link: string;
+  by?: string;
+  pt?: number;
+  seen?: number;
+}
+
+export enum TFType {
+  RANK = 'RANK',
+  NORM = 'NORM',
 }
