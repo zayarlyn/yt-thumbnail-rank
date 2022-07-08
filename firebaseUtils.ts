@@ -50,8 +50,12 @@ export const fetchThumbnails = async () => {
   })) as ThumbNail[];
 };
 
-export const incrementThumb = async (id: string) => {
-  return setDoc(doc(db, 'thumbnails', id), { pt: increment(1) }, { merge: true });
+export const incrementThumb = async (id: string, incre_pt = false) => {
+  return setDoc(
+    doc(db, 'thumbnails', id),
+    { seen: increment(1), pt: increment(incre_pt ? 1 : 0) },
+    { merge: true }
+  );
 };
 
 export interface ThumbNail {

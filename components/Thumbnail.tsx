@@ -1,10 +1,11 @@
+import { useEffect } from 'react';
 import Image from 'next/image';
 import { AspectRatio } from '@chakra-ui/react';
 import React from 'react';
 import { IndiceAction, IndiceActionType } from '../pages';
 import { incrementThumb } from '../firebaseUtils';
 
-interface ThumbNail {
+interface Props {
   id?: string;
   url: string;
   active?: boolean;
@@ -12,17 +13,24 @@ interface ThumbNail {
   type?: IndiceActionType;
 }
 
-const Thumbnail = ({ id, url, active, dispatch, type }: ThumbNail) => {
+const Thumbnail: React.FC<Props> = ({ id, url, active, dispatch, type }) => {
+  useEffect(() => {
+    console.log('render', id);
+    // useeffect is running twice
+    if (!id) return;
+    incrementThumb(id);
+  }, []);
+
   const handleClick = () => {
     if (!type || !dispatch || !id) return;
     dispatch({ type });
-    incrementThumb(id);
+    incrementThumb(id, true);
   };
 
   return (
     <AspectRatio
       cursor={active ? 'pointer' : ''}
-      outline='3px solid'
+      border='3px solid'
       position='relative'
       transitionDuration='300ms'
       _hover={{ transform: active ? 'scale(1.05)' : '' }}
