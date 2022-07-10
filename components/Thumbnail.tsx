@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { AspectRatio } from '@chakra-ui/react';
 import React from 'react';
 import { IndiceAction, IndiceActionType } from '../pages';
-import { incrementThumb, parseVideoId } from '../firebaseUtils';
+import { incrementThumb, parseLinkWithFallback, parseVideoId } from '../firebaseUtils';
 
 interface Props {
   id?: string;
@@ -14,17 +14,24 @@ interface Props {
 }
 
 const Thumbnail: React.FC<Props> = ({ id, v_link, active, dispatch, type }) => {
+  const [src, setSrc] = useState('');
+
   useEffect(() => {
-    console.log('render', id);
-    // useeffect is running twice
-    if (!id) return;
+    setSrc(parseLinkWithFallback(v_link));
+    // record view count
+    if (!id || !active) return;
     incrementThumb(id);
-  }, []);
+  }, [v_link]);
 
   const handleClick = () => {
+    // record click count
     if (!type || !dispatch || !id) return;
     dispatch({ type });
     incrementThumb(id, true);
+  };
+
+  const handleError = () => {
+    setSrc(parseLinkWithFallback(v_link, true));
   };
 
   return (
@@ -37,7 +44,17 @@ const Thumbnail: React.FC<Props> = ({ id, v_link, active, dispatch, type }) => {
       _active={{ transform: active ? 'scale(.95)' : '' }}
       ratio={16 / 9}
     >
-      <Image onClick={handleClick} src={`https://img.youtube.com/vi/${parseVideoId(v_link)}/maxresdefault.jpg`} layout='fill' objectFit='cover' />
+      {src ? (
+        <Image
+          onClick={handleClick}
+          onError={handleError}
+          src={src}
+          layout='fill'
+          objectFit='cover'
+        />
+      ) : (
+        <></>
+      )}
     </AspectRatio>
   );
 };

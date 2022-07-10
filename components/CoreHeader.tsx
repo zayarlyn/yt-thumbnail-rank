@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { AuthStoreType, useAuthStore } from '../store/auth';
 import { signOutUser } from '../firebaseUtils';
-import { Box } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { Link as Clink } from '@chakra-ui/react';
 
 const CoreHeader = () => {
@@ -20,15 +20,20 @@ const CoreHeader = () => {
             <Clink>ranking</Clink>
           </Link>
         </Box>
-        <nav>
+        <Flex columnGap={4}>
           {isAuthenticated ? (
-            <button onClick={signOutUser}>sign out</button>
+            <>
+              <Link href='/profile'>
+                <Clink>profile</Clink>
+              </Link>
+              <button onClick={signOutUser}>sign out</button>
+            </>
           ) : (
             <Link href='/signin'>
               <a>sign in</a>
             </Link>
           )}
-        </nav>
+        </Flex>
       </Box>
     </header>
   );

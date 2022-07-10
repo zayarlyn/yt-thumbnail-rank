@@ -43,12 +43,12 @@ const indiceReducer = ({ left, right, next }: State, action: IndiceAction) => {
 };
 
 const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
-  console.log('pop', thumbnails);
   const [{ left, right, next }, dispatch] = useReducer(indiceReducer, {
     left: 0,
     right: 1,
     next: 2,
   });
+  // return null;
 
   return (
     <Box display='flex' flexDir='column' alignItems='center' mt={6}>
@@ -60,20 +60,18 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
         <Box as='main' w='min(35rem, 90%)' mt={8} px={4}>
           <Heading fontSize='2xl'>Which one draw your attention?</Heading>
           <Grid flexGrow={1} rowGap={12} mt={12}>
-            <Thumbnail
-              active
-              id={thumbnails[left].id}
-              dispatch={dispatch}
-              type={IndiceActionType.LEFT}
-              v_link={thumbnails[left].yt_link}
-            />
-            <Thumbnail
-              active
-              id={thumbnails[right].id}
-              dispatch={dispatch}
-              type={IndiceActionType.RIGHT}
-              v_link={thumbnails[right].yt_link}
-            />
+            {[
+              { dir: left, type: IndiceActionType.LEFT },
+              { dir: right, type: IndiceActionType.RIGHT },
+            ].map(({ dir, type }) => (
+              <Thumbnail
+                active
+                id={thumbnails[dir].id}
+                dispatch={dispatch}
+                type={type}
+                v_link={thumbnails[dir].yt_link}
+              />
+            ))}
           </Grid>
         </Box>
       ) : (
@@ -89,6 +87,6 @@ export default Home;
 //'https://img.youtube.com/vi/Zmjjx7n5toY/hqdefault.jpg'
 
 export async function getServerSideProps() {
-  const thumbnails = await fetchThumbnails({type: TFType.NORM});
+  const thumbnails = await fetchThumbnails({ type: TFType.NORM });
   return { props: { thumbnails } };
 }

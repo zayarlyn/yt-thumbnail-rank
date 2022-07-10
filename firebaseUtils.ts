@@ -18,7 +18,7 @@ export const actionCodeSettings = {
 };
 
 export const parseVideoId = (url: string) => {
-  return url.match(/(?<=v=).*/)?.[0];
+  return url.match(/(?<=v=)[\w\-]*/)?.[0];
 };
 
 export const isAuthenticated = () => {
@@ -62,6 +62,13 @@ export const incrementThumb = async (id: string, incre_pt = false) => {
     { seen: increment(1), pt: increment(incre_pt ? 1 : 0) },
     { merge: true }
   );
+};
+// https://www.youtube.com/watch?v=nROvY9uiYYk
+export const parseLinkWithFallback = (url: string, isErr = false) => {
+  const vId = parseVideoId(url);
+  return isErr
+    ? `https://img.youtube.com/vi/${vId}/hqdefault.jpg`
+    : `https://img.youtube.com/vi/${vId}/maxresdefault.jpg`;
 };
 
 export interface ThumbNail {

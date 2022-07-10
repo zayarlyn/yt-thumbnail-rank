@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Button,
   Drawer,
@@ -16,23 +16,28 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { parseVideoId, uploadThumbnail } from '../firebaseUtils';
+import { parseLinkWithFallback, parseVideoId, uploadThumbnail } from '../firebaseUtils';
 import Thumbnail from './Thumbnail';
 
 const RightDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isValidUrl, setIsValidUrl] = useState<undefined | string>('');
-  const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [thumb_link, setThumb_link] = useState<undefined | string>();
+  const [url, setUrl] = useState('');
 
   const handleUpload = async () => {
     setLoading(true);
     await uploadThumbnail(url);
     setLoading(false);
-    setIsValidUrl('');
-    setUrl('');
+    setThumb_link(undefined)
     onClose();
   };
+
+  const handleGenerate = () => {
+    setThumb_link(url) 
+  };
+
+  console.log(url);
 
   return (
     <>
@@ -60,7 +65,8 @@ const RightDrawer = () => {
           <DrawerBody>
             <Stack mt={8} spacing={12}>
               <Box>
-                <FormControl isInvalid={isValidUrl === undefined}>
+                <FormControl isInvalid={thumb_link === ''}>
+                {/* <FormControl> */}
                   <FormLabel htmlFor='video_link'>Youtube video Link</FormLabel>
                   <Input
                     value={url}
@@ -71,7 +77,7 @@ const RightDrawer = () => {
                   <FormErrorMessage>link is invalid</FormErrorMessage>
                 </FormControl>
                 <Button
-                  onClick={() => setIsValidUrl(parseVideoId(url))}
+                  onClick={handleGenerate}
                   mt={4}
                   bg='teal.300'
                   w='full'
@@ -80,9 +86,9 @@ const RightDrawer = () => {
                   Generate thumbnail
                 </Button>
               </Box>
-              {isValidUrl && (
+              {thumb_link && (
                 <Box>
-                  <Thumbnail v_link={url} />
+                  <Thumbnail v_link={thumb_link} />
                   <Button
                     onClick={handleUpload}
                     isLoading={loading}
