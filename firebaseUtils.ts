@@ -1,4 +1,4 @@
-import { signOut, getAuth } from 'firebase/auth';
+import { signOut, getAuth, updateProfile, User } from 'firebase/auth';
 import {
   collection,
   addDoc,
@@ -70,6 +70,8 @@ export const parseLinkWithFallback = (url: string, isErr = false) => {
     ? `https://img.youtube.com/vi/${vId}/hqdefault.jpg`
     : `https://img.youtube.com/vi/${vId}/maxresdefault.jpg`;
 };
+
+
 
 export interface ThumbNail {
   id: string;

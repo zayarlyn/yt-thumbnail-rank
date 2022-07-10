@@ -5,7 +5,7 @@ import { Box, Flex } from '@chakra-ui/react';
 import { Link as Clink } from '@chakra-ui/react';
 
 const CoreHeader = () => {
-  const { isAuthenticated } = useAuthStore() as AuthStoreType;
+  const { user: isAuthenticated } = useAuthStore() as AuthStoreType;
 
   return (
     <header>

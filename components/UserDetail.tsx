@@ -12,17 +12,25 @@ import {
   IconButton,
   Flex,
 } from '@chakra-ui/react';
+import { reload, User } from 'firebase/auth';
 import { CheckIcon, EditIcon } from '@chakra-ui/icons';
+import { useAuthStore, AuthStoreType } from '../store/auth';
 import ProfileField from './ProfileField';
 
 const UserDetail = () => {
-  const [pfp_link, setPfp_link] = useState({ value: '', isEditing: false });
+  const { user, updateUserInfo } = useAuthStore() as AuthStoreType;
+  const [{ isEditing, isLoading }, setUpdateProgress] = useState({
+    isEditing: false,
+    isLoading: false,
+  });
   const urlRef = useRef<HTMLInputElement | null>(null);
+  const username = user?.displayName ?? user?.uid.slice(0, 9) ?? '';
 
-  const handleUpdatePfp = () => {
+  const handleUpdatePfp = async () => {
+    setUpdateProgress({ isEditing: true, isLoading: true });
     const new_pfp = urlRef.current?.value;
-    setPfp_link((prev) => ({ value: new_pfp ? new_pfp : prev.value, isEditing: false }));
-    // if (!new_pfp) return;
+    await updateUserInfo({ photoURL: new_pfp } as User);
+    setUpdateProgress({ isEditing: false, isLoading: false });
   };
 
   return (
@@ -30,21 +38,19 @@ const UserDetail = () => {
       <Box display='flex' alignItems='center' columnGap={12}>
         <Box position='relative' role='group'>
           <Avatar
-            name='kira yoshikage'
-            src={'https://avatars.githubusercontent.com/u/1332805?v=4'}
+            name={username}
+            src={user?.photoURL ?? ''}
             {...(avatarprops as AvatarProps)}
           ></Avatar>
           <Button
-            onClick={() =>
-              setPfp_link(({ value, isEditing }) => ({ value, isEditing: !isEditing }))
-            }
+            onClick={() => setUpdateProgress({ isEditing: true, isLoading: false })}
             {...(buttonprops as ButtonProps)}
           ></Button>
           <EditIcon {...(iconprops as IconProps)} />
         </Box>
         <VStack align='stratch' flexGrow={1} p={2}>
-          <ProfileField dValue='Ikari Shinji' label='username' />
-          <ProfileField dValue='FryMyRice' label='channel' />
+          <ProfileField value={username} label='username' />
+          <ProfileField value='FryMyRice' label='channel' />
           <Box pl={2}>
             clicked:
             <Text as='span' ml={2} fontWeight='medium'>
@@ -59,11 +65,12 @@ const UserDetail = () => {
           </Box>
         </VStack>
       </Box>
-      {pfp_link.isEditing && (
+      {isEditing && (
         <Flex mt={6}>
           <Input ref={urlRef} placeholder='profile url' size='sm' />
           <IconButton
             onClick={handleUpdatePfp}
+            isLoading={isLoading}
             bgColor='cyan.300'
             ml={4}
             size='sm'
@@ -106,3 +113,5 @@ const buttonprops = {
   opacity: 0,
   _hover: { opacity: 0.4, bgColor: 'gray.600' },
 };
+// https://i.pinimg.com/736x/b3/43/cb/b343cbb24c0954a5dd04c79fe6c36abe.jpg
+// https://avatars.githubusercontent.com/u/1332805?v=4
