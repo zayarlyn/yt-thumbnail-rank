@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { Text, Editable, FormLabel, Box, EditablePreview, EditableInput } from '@chakra-ui/react';
+import { useRef } from 'react';
+import { Text, Editable, Box, EditablePreview, EditableInput, useToast } from '@chakra-ui/react';
 import EditableControls from './EditableControls';
 import { updateUserInfo } from '../firebaseUtils';
 import { User } from 'firebase/auth';
@@ -11,17 +11,17 @@ interface Props {
 
 const ProfileField: React.FC<Props> = ({ value, label }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const handleUpdate = () => {
+  const toast = useToast();
+
+  const handleUpdate = async () => {
     const new_value = inputRef.current?.value;
-    updateUserInfo({ displayName: new_value } as User);
+    if (new_value === value) return;
+    await updateUserInfo({ displayName: new_value } as User);
+    toast({ description: 'Username updated', status: 'success', position: 'top', duration: 2000 });
   };
 
   return (
-    <Editable
-      onSubmit={handleUpdate}
-      size='sm'
-      defaultValue={value}
-    >
+    <Editable onSubmit={handleUpdate} size='sm' defaultValue={value}>
       <Text as='label' pl={2}>
         {label}:
       </Text>

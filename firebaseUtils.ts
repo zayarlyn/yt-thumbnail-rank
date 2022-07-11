@@ -33,13 +33,13 @@ export const isSignInLink = (link: string) => {
   return link.startsWith('http://localhost:3000/signin?apiKey');
 };
 
-export const uploadThumbnail = async (yt_link: string, by?: string) => {
+export const uploadThumbnail = async ({ yt_link, by }: { yt_link: string; by?: string }) => {
   return addDoc(collection(db, 'thumbnails'), {
-    yt_link,
     at: serverTimestamp(),
     pt: 0,
     seen: 0,
-    ...(by && { by }),
+    yt_link,
+    by: by ? by : 'a contributer',
   });
 };
 

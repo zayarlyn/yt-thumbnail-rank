@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Button,
   Drawer,
@@ -14,30 +14,39 @@ import {
   Input,
   DrawerBody,
   FormErrorMessage,
+  useToast,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { parseLinkWithFallback, parseVideoId, uploadThumbnail } from '../firebaseUtils';
+import { AuthStoreType, useAuthStore } from '../store/auth';
+import { uploadThumbnail } from '../firebaseUtils';
 import Thumbnail from './Thumbnail';
 
 const RightDrawer = () => {
+  const {user} = useAuthStore() as AuthStoreType;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setLoading] = useState(false);
   const [thumb_link, setThumb_link] = useState<undefined | string>();
   const [url, setUrl] = useState('');
+  const toast = useToast();
 
   const handleUpload = async () => {
     setLoading(true);
-    await uploadThumbnail(url);
+    await uploadThumbnail({yt_link: url, by: user?.uid});
+    toast({
+      title: 'thumbnail uploaded',
+      description: 'Thank you for your contribution',
+      status: 'success',
+      position: 'top',
+      duration: 2500,
+    });
     setLoading(false);
-    setThumb_link(undefined)
+    setThumb_link(undefined);
     onClose();
   };
 
   const handleGenerate = () => {
-    setThumb_link(url) 
+    setThumb_link(url);
   };
-
-  console.log(url);
 
   return (
     <>
@@ -66,7 +75,7 @@ const RightDrawer = () => {
             <Stack mt={8} spacing={12}>
               <Box>
                 <FormControl isInvalid={thumb_link === ''}>
-                {/* <FormControl> */}
+                  {/* <FormControl> */}
                   <FormLabel htmlFor='video_link'>Youtube video Link</FormLabel>
                   <Input
                     value={url}

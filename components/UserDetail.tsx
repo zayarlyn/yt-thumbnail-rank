@@ -11,6 +11,7 @@ import {
   Input,
   IconButton,
   Flex,
+  useToast,
 } from '@chakra-ui/react';
 import { User } from 'firebase/auth';
 import { CheckIcon, EditIcon } from '@chakra-ui/icons';
@@ -21,11 +22,18 @@ const UserDetail = ({ user }: { user: User }) => {
   const [isEditing, setIsEditing] = useState(false);
   const urlRef = useRef<HTMLInputElement | null>(null);
   const username = user?.displayName ?? user?.uid.slice(0, 9) ?? '';
+  const toast = useToast();
 
   const handleUpdatePfp = async () => {
     const new_pfp = urlRef.current?.value;
     await updateUserInfo({ photoURL: new_pfp } as User);
     setIsEditing(false);
+    toast({
+      description: 'Profile picture updated',
+      status: 'success',
+      position: 'top',
+      duration: 2000,
+    });
   };
 
   return (
