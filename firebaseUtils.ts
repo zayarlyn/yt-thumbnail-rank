@@ -71,7 +71,11 @@ export const parseLinkWithFallback = (url: string, isErr = false) => {
     : `https://img.youtube.com/vi/${vId}/maxresdefault.jpg`;
 };
 
-
+export const updateUserInfo = async (new_data: User) => {
+  const user = getAuth(app).currentUser;
+  if (!user) return;
+  return updateProfile(user, new_data);
+};
 
 export interface ThumbNail {
   id: string;

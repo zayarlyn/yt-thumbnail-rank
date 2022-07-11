@@ -48,7 +48,7 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
     right: 1,
     next: 2,
   });
-  // return null;
+  return null;
 
   return (
     <Box display='flex' flexDir='column' alignItems='center' mt={6}>

@@ -12,25 +12,20 @@ import {
   IconButton,
   Flex,
 } from '@chakra-ui/react';
-import { reload, User } from 'firebase/auth';
+import { User } from 'firebase/auth';
 import { CheckIcon, EditIcon } from '@chakra-ui/icons';
-import { useAuthStore, AuthStoreType } from '../store/auth';
+import { updateUserInfo } from '../firebaseUtils';
 import ProfileField from './ProfileField';
 
-const UserDetail = () => {
-  const { user, updateUserInfo } = useAuthStore() as AuthStoreType;
-  const [{ isEditing, isLoading }, setUpdateProgress] = useState({
-    isEditing: false,
-    isLoading: false,
-  });
+const UserDetail = ({ user }: { user: User }) => {
+  const [isEditing, setIsEditing] = useState(false);
   const urlRef = useRef<HTMLInputElement | null>(null);
   const username = user?.displayName ?? user?.uid.slice(0, 9) ?? '';
 
   const handleUpdatePfp = async () => {
-    setUpdateProgress({ isEditing: true, isLoading: true });
     const new_pfp = urlRef.current?.value;
     await updateUserInfo({ photoURL: new_pfp } as User);
-    setUpdateProgress({ isEditing: false, isLoading: false });
+    setIsEditing(false);
   };
 
   return (
@@ -43,14 +38,14 @@ const UserDetail = () => {
             {...(avatarprops as AvatarProps)}
           ></Avatar>
           <Button
-            onClick={() => setUpdateProgress({ isEditing: true, isLoading: false })}
+            onClick={() => setIsEditing((prev) => !prev)}
             {...(buttonprops as ButtonProps)}
           ></Button>
           <EditIcon {...(iconprops as IconProps)} />
         </Box>
         <VStack align='stratch' flexGrow={1} p={2}>
           <ProfileField value={username} label='username' />
-          <ProfileField value='FryMyRice' label='channel' />
+          {/* <ProfileField value='FryMyRice' label='channel' /> */}
           <Box pl={2}>
             clicked:
             <Text as='span' ml={2} fontWeight='medium'>
@@ -63,6 +58,12 @@ const UserDetail = () => {
               {7}
             </Text>
           </Box>
+          <Box pl={2}>
+            email:
+            <Text as='span' ml={2} fontWeight='medium'>
+              {user.email}
+            </Text>
+          </Box>
         </VStack>
       </Box>
       {isEditing && (
@@ -70,7 +71,6 @@ const UserDetail = () => {
           <Input ref={urlRef} placeholder='profile url' size='sm' />
           <IconButton
             onClick={handleUpdatePfp}
-            isLoading={isLoading}
             bgColor='cyan.300'
             ml={4}
             size='sm'
