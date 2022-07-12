@@ -16,7 +16,7 @@ const CoreHeader = () => {
               YT
             </Clink>
           </Link>
-          <Link href='/ranking'>
+          <Link href='/ranking/5'>
             <Clink>ranking</Clink>
           </Link>
         </Box>

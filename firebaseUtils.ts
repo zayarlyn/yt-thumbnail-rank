@@ -10,6 +10,7 @@ import {
   query,
   orderBy,
   getDoc,
+  limit,
 } from 'firebase/firestore';
 import { app, db } from './firebaseconfig';
 
@@ -44,10 +45,15 @@ export const uploadThumbnail = async ({ yt_link, by }: { yt_link: string; by?: s
   });
 };
 
-export const fetchThumbnails = async ({ type }: { type: TFType }) => {
+export const fetchThumbnails = async ({ type, LIMIT }: FetchThumbnails) => {
   const q =
     type === 'RANK'
-      ? query(collection(db, 'thumbnails'), orderBy('pt', 'desc'), orderBy('seen', 'desc'))
+      ? query(
+          collection(db, 'thumbnails'),
+          orderBy('pt', 'desc'),
+          orderBy('seen', 'desc'),
+          limit(LIMIT ?? 5)
+        )
       : query(collection(db, 'thumbnails'), orderBy('at', 'desc'));
   const raw = await getDocs(q);
   return raw.docs.map((doc) => ({
@@ -80,7 +86,7 @@ export const updateUserInfo = async (new_data: User) => {
 
 export const getPublicUser = async (id: string) => {
   const raw = await getDoc(doc(db, 'users', id));
-  return {...raw.data()} 
+  return { ...raw.data() };
 };
 
 export interface ThumbNail {
@@ -95,4 +101,9 @@ export interface ThumbNail {
 export enum TFType {
   RANK = 'RANK',
   NORM = 'NORM',
+}
+
+export interface FetchThumbnails {
+  type: TFType;
+  LIMIT?: number
 }
