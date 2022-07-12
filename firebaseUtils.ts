@@ -9,6 +9,7 @@ import {
   increment,
   query,
   orderBy,
+  getDoc,
 } from 'firebase/firestore';
 import { app, db } from './firebaseconfig';
 
@@ -75,6 +76,11 @@ export const updateUserInfo = async (new_data: User) => {
   const user = getAuth(app).currentUser;
   if (!user) return;
   return updateProfile(user, new_data);
+};
+
+export const getPublicUser = async (id: string) => {
+  const raw = await getDoc(doc(db, 'users', id));
+  return {...raw.data()} 
 };
 
 export interface ThumbNail {

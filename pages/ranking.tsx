@@ -2,6 +2,7 @@ import { Box, Grid } from '@chakra-ui/react';
 import { fetchThumbnails, TFType, ThumbNail } from '../firebaseUtils';
 import { NextPage } from 'next';
 import ThumbNailStats from '../components/ThumbNailStats';
+import useUserData from '../hooks/useUserData';
 
 const ranking: NextPage<{ rankings: ThumbNail[] }> = ({ rankings }) => {
   return (

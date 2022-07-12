@@ -19,8 +19,8 @@ const Thumbnail: React.FC<Props> = ({ id, v_link, active, dispatch, type }) => {
   useEffect(() => {
     setSrc(parseLinkWithFallback(v_link));
     // record view count
-    if (!id || !active) return;
-    incrementThumb(id);
+    // if (!id || !active) return;
+    // incrementThumb(id);
   }, [v_link]);
 
   const handleClick = () => {
@@ -36,6 +36,7 @@ const Thumbnail: React.FC<Props> = ({ id, v_link, active, dispatch, type }) => {
 
   return (
     <AspectRatio
+      w='full'
       cursor={active ? 'pointer' : ''}
       border='3px solid'
       position='relative'

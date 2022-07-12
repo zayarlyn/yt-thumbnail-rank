@@ -1,20 +1,10 @@
-import { useState, useReducer } from 'react';
+import { useState, useReducer, useEffect } from 'react';
 import type { NextPage } from 'next';
 import { AppInitialProps } from 'next/app';
-import { Box, Grid, Heading, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import Head from 'next/head';
 import { fetchThumbnails, ThumbNail, parseVideoId, TFType } from '../firebaseUtils';
 import Thumbnail from '../components/Thumbnail';
-
-const THUMBNAILS = [
-  '/thumb-1.jpg',
-  '/thumb-2.jpg',
-  '/thumb-3.jpg',
-  '/thumb-4.jpg',
-  '/thumb-5.jpg',
-  '/thumb-6.jpg',
-  '/thumb-7.jpg',
-];
 
 export enum IndiceActionType {
   LEFT = 'LEFT',
@@ -48,23 +38,26 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
     right: 1,
     next: 2,
   });
-  return null;
 
+  console.log('nails', thumbnails);
   return (
-    <Box display='flex' flexDir='column' alignItems='center' mt={6}>
+    <Box display='grid' h='calc(100vh - 6rem)' flexDir='column' placeItems='center'>
       <Head>
         <title>yt thumb</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
       {next <= thumbnails.length ? (
-        <Box as='main' w='min(35rem, 90%)' mt={8} px={4}>
-          <Heading fontSize='2xl'>Which one draw your attention?</Heading>
-          <Grid flexGrow={1} rowGap={12} mt={12}>
+        <Box as='main' w='full' maxW={['25rem', '25rem', '77rem']} mt={{sm: 6, md: 0}} mb={20} px={4}>
+          <Heading textAlign='center' fontSize={{sm: '2xl', md: '3xl'}}>
+            Which one draw your attention?
+          </Heading>
+          <Flex flexDir={['column', 'column', 'row']} columnGap='min(5vw, 3rem)' rowGap={12} mt={[8, 8, 16]}>
             {[
               { dir: left, type: IndiceActionType.LEFT },
               { dir: right, type: IndiceActionType.RIGHT },
             ].map(({ dir, type }) => (
               <Thumbnail
+              key={dir}
                 active
                 id={thumbnails[dir].id}
                 dispatch={dispatch}
@@ -72,7 +65,7 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
                 v_link={thumbnails[dir].yt_link}
               />
             ))}
-          </Grid>
+          </Flex>
         </Box>
       ) : (
         <Text w='40vh' mt='30vh' textAlign='center'>
@@ -84,7 +77,6 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
 };
 
 export default Home;
-//'https://img.youtube.com/vi/Zmjjx7n5toY/hqdefault.jpg'
 
 export async function getServerSideProps() {
   const thumbnails = await fetchThumbnails({ type: TFType.NORM });

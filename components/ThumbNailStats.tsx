@@ -14,15 +14,18 @@ import {
 import { ViewIcon, StarIcon } from '@chakra-ui/icons';
 import { ThumbNail } from '../firebaseUtils';
 import Thumbnail from './Thumbnail';
+import useUserData from '../hooks/useUserData';
+import Link from 'next/link';
 
 interface Props extends ThumbNail {
   idx: number;
 }
 
-const ThumbNailStats: React.FC<Props> = ({ id, yt_link, pt, seen, at, by, idx }) => {
+const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx }) => {
   if (!seen || !pt) return null;
   const d = new Date(at);
   const rating = (pt * 100) / seen;
+  const publicUser = by ? useUserData({}) : null;
 
   return (
     <GridItem
@@ -35,8 +38,11 @@ const ThumbNailStats: React.FC<Props> = ({ id, yt_link, pt, seen, at, by, idx })
     >
       <Box position='relative' flexGrow={1}>
         <Thumbnail v_link={yt_link} />
-        <Box {...badgeProps as ChakraProps}>
+        <Box {...(badgeProps as ChakraProps)}>
           <span>{idx + 1}</span>
+        </Box>
+        <Box onClick={() => window.open(yt_link, '_blank')} {...(overlayprops as ChakraProps)}>
+          <Text fontWeight='medium'>Watch on Youtube</Text>
         </Box>
       </Box>
       <Box pl={{ md: 2 }} w={{ md: '15rem' }}>
@@ -74,7 +80,10 @@ const ThumbNailStats: React.FC<Props> = ({ id, yt_link, pt, seen, at, by, idx })
           justifyContent='space-between'
         >
           <Text fontSize={[13, 'sm']}>
-            submitted by <span className='font-semibold text-primary'>{by ?? 'a contributer'}</span>
+            submitted by{' '}
+            <span className='font-semibold text-primary'>
+              {publicUser ? publicUser.username : 'a contributer'}
+            </span>
           </Text>
           <Flex fontSize={12}>
             <Text>{d.toLocaleDateString()}</Text>
@@ -91,16 +100,33 @@ const ThumbNailStats: React.FC<Props> = ({ id, yt_link, pt, seen, at, by, idx })
 
 export default ThumbNailStats;
 
-const badgeProps = {
-  w: [12, 16],
-  h: [12, 16],
+const common = {
+  w: 'full',
+  h: 'full',
+  position: 'absolute',
   top: 0,
   right: 0,
-  fontSize: '4xl',
+  bgColor: 'gray.300',
   display: 'grid',
   placeItems: 'center',
-  position: 'absolute',
+};
+
+const badgeProps = {
+  ...common,
+  w: [12, 16],
+  h: [12, 16],
+  fontSize: '4xl',
   shadow: 'lg',
   bgColor: 'black',
   color: 'white',
+};
+
+const overlayprops = {
+  ...common,
+  opacity: 0,
+  transitionDuration: '200ms',
+  cursor: 'pointer',
+  _hover: {
+    opacity: 0.7,
+  },
 };
