@@ -5,11 +5,10 @@ import {
   Input,
   IconButton,
   Avatar,
-  Button,
-  ButtonProps,
   IconProps,
-  AvatarProps,
   useToast,
+  AspectRatio,
+  ChakraProps,
 } from '@chakra-ui/react';
 import { EditIcon, CheckIcon } from '@chakra-ui/icons';
 import { User } from 'firebase/auth';
@@ -38,18 +37,20 @@ const UserPfp: React.FC<Props> = ({ username, photoUrl }) => {
   };
 
   const handleToggleEdit = () => {
-    setLocal(prev => ({...prev, isEditing: !prev.isEditing}));
+    setLocal((prev) => ({ ...prev, isEditing: !prev.isEditing }));
   };
 
   return (
-    <Box>
-      <Box onClick={handleToggleEdit} position='relative' role='group'>
-        <Avatar name={username} src={url ?? ''} {...(avatarprops as AvatarProps)}></Avatar>
-        <Button {...(buttonprops as ButtonProps)}>Edit</Button>
-        <EditIcon {...(iconprops as IconProps)} />
-      </Box>
+    <Box w={['90%', '35%']} maxW={[64]} mx='auto'>
+      <AspectRatio w='full' ratio={1 / 1}>
+        <Box onClick={handleToggleEdit} borderRadius='50%' position='relative' role='group'>
+          <Avatar name={username} src={url ?? ''} w='full' h='full' />
+          <Box {...(boxprops as ChakraProps)} />
+          <EditIcon {...(iconprops as IconProps)} />
+        </Box>
+      </AspectRatio>
       {isEditing && (
-        <Flex w='full' position='absolute' mt={6}>
+        <Flex w='full' position={{ sm: 'absolute' }} bottom={{ sm: -12 }} mt={4} pb={0}>
           <Input ref={urlRef} placeholder='profile url' size='sm' />
           <IconButton
             onClick={handleUpdatePfp}
@@ -67,13 +68,6 @@ const UserPfp: React.FC<Props> = ({ username, photoUrl }) => {
 
 export default UserPfp;
 
-const avatarprops = {
-  width: '10rem',
-  height: '10rem',
-  size: '3xl',
-  fontSize: '4xl',
-};
-
 const iconprops = {
   position: 'absolute',
   transform: 'translateY(-50%) translateX(-50%)',
@@ -85,7 +79,7 @@ const iconprops = {
   _groupHover: { opacity: 1 },
 };
 
-const buttonprops = {
+const boxprops = {
   maxW: 'none',
   width: 'full',
   height: 'full',

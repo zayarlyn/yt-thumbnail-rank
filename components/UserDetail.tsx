@@ -7,9 +7,9 @@ const UserDetail = ({ user }: { user: User }) => {
   const username = user?.displayName ?? user?.uid.slice(0, 9) ?? '';
 
   return (
-    <Box position='relative' display={['block','block','flex']} alignItems='center' columnGap={12}>
+    <Box mt={[6]} position='relative' display={['block','flex']} alignItems='center' columnGap={{sm: '4vw'}}>
       <UserPfp username={username} photoUrl={user.photoURL} />
-      <VStack align='stratch' flexGrow={1} p={2}>
+      <VStack align='stratch' flexGrow={1} p={2} mt={[4, 0]} spacing={[3, 2]}>
         <ProfileField value={username} label='username' />
         {/* <ProfileField value='FryMyRice' label='channel' /> */}
         <Box pl={2}>
