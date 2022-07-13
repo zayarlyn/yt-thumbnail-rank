@@ -43,7 +43,7 @@ const UserPfp: React.FC<Props> = ({ username, photoUrl }) => {
   return (
     <Box w={['90%', '35%']} flexShrink={0} maxW={[64]} mx='auto'>
       <AspectRatio w='full' ratio={1 / 1}>
-        <Box onClick={handleToggleEdit} borderRadius='50%' position='relative' role='group'>
+        <Box onClick={handleToggleEdit} cursor='pointer' borderRadius='50%' position='relative' role='group'>
           <Avatar name={username} src={url ?? ''} w='full' h='full' />
           <Box {...(boxprops as ChakraProps)} />
           <EditIcon {...(iconprops as IconProps)} />
@@ -74,13 +74,11 @@ const iconprops = {
   left: '50%',
   top: '50%',
   fontSize: '2xl',
-  cursor: 'pointer',
   opacity: 0,
   _groupHover: { opacity: 1 },
 };
 
 const boxprops = {
-  maxW: 'none',
   width: 'full',
   height: 'full',
   position: 'absolute',

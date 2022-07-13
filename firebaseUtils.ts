@@ -93,7 +93,17 @@ export const getPublicUser = async (id: string) => {
 export const updatePublicUser = async (public_data: Public_data) => {
   const user = getAuth(app).currentUser;
   if (!user) return;
-  return updateDoc(doc(db, 'users', user?.uid), {...public_data});
+  return updateDoc(doc(db, 'users', user?.uid), { ...public_data });
+};
+
+export const updatePrivateUser = async ({ seen, clicked }: Private_data) => {
+  const user = getAuth(app).currentUser;
+  if (!user) return;
+  return setDoc(
+    doc(db, 'users', user?.uid, 'private', 'profile'),
+    { seen: increment(seen ? 1 : 0), clicked: increment(clicked ? 1 : 0) },
+    { merge: true }
+  );
 };
 
 export interface ThumbNail {
@@ -117,4 +127,9 @@ export interface FetchThumbnails {
 
 interface Public_data {
   username?: string;
+}
+
+interface Private_data {
+  seen?: boolean;
+  clicked?: boolean;
 }
