@@ -106,6 +106,14 @@ export const updatePrivateUser = async ({ seen, clicked }: Private_data) => {
   );
 };
 
+export const FisherYatesRandomize = (thumbnails: ThumbNail[]) => {
+  for (let i = thumbnails.length - 1; i > 0; i--) {
+    const j = Math.round(Math.random() * i);
+    [thumbnails[i], thumbnails[j]] = [thumbnails[j], thumbnails[i]];
+  }
+  return thumbnails
+};
+
 export interface ThumbNail {
   id: string;
   at: number;

@@ -2,7 +2,7 @@ import { useReducer } from 'react';
 import type { NextPage } from 'next';
 import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import Head from 'next/head';
-import { fetchThumbnails, ThumbNail, parseVideoId, TFType } from '../firebaseUtils';
+import { fetchThumbnails, ThumbNail, parseVideoId, TFType, FisherYatesRandomize } from '../firebaseUtils';
 import Thumbnail from '../components/Thumbnail';
 
 export enum IndiceActionType {
@@ -67,7 +67,7 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
           </Flex>
         </Box>
       ) : (
-        <Text w='40vh' mt='30vh' textAlign='center'>
+        <Text w='40vh' textAlign='center'>
           No more thumbnails for now. <button>submit</button> your own or touch some grass
         </Text>
       )}
@@ -79,5 +79,5 @@ export default Home;
 
 export async function getServerSideProps() {
   const thumbnails = await fetchThumbnails({ type: TFType.NORM });
-  return { props: { thumbnails } };
+  return { props: { thumbnails: FisherYatesRandomize(thumbnails) } };
 }
