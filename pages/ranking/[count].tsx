@@ -20,9 +20,9 @@ const ranking: NextPage<SSProps> = ({ rankings, selected }) => {
       h='calc(100vh - 60px)'
       overflowY='scroll'
     >
-      <Flex alignItems='center' py={4} fontSize='lg' {...dimension}>
-        <span>Top</span>
-        <Tabs defaultIndex={selected - 1} mx={3} variant='solid-rounded'>
+      <Flex fontSize={['md','lg']} fontWeight='medium' alignItems='center' py={4} mt={4} {...dimension}>
+        Top
+        <Tabs size={['sm', 'md']} defaultIndex={selected - 1} mx={3} variant='solid-rounded'>
           <TabList>
             {[5, 10, 15].map((i) => (
               <Tab
@@ -34,7 +34,7 @@ const ranking: NextPage<SSProps> = ({ rankings, selected }) => {
             ))}
           </TabList>
         </Tabs>
-        <span>thumbnails</span>
+        thumbnails
       </Flex>
       <Grid as='main' flexGrow={1} fontSize='lg' rowGap={16} mb={20} {...dimension}>
         {rankings?.map((thumbnail, i) => (

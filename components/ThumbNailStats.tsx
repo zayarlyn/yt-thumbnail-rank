@@ -71,7 +71,7 @@ const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx }) => 
           </Stat>
         </StatGroup>
         <Box
-          mt={[0, 4, 6, 16]}
+          mt={[2, 4, 6, 16]}
           display='flex'
           flexWrap='wrap'
           columnGap={6}

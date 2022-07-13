@@ -1,6 +1,5 @@
-import { useState, useReducer, useEffect } from 'react';
+import { useReducer } from 'react';
 import type { NextPage } from 'next';
-import { AppInitialProps } from 'next/app';
 import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import Head from 'next/head';
 import { fetchThumbnails, ThumbNail, parseVideoId, TFType } from '../firebaseUtils';
@@ -39,7 +38,7 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
     next: 2,
   });
 
-  console.log('nails', thumbnails);
+  // console.log('nails', thumbnails);
   return (
     <Box display='grid' h='calc(100vh - 6rem)' flexDir='column' placeItems='center'>
       <Head>
@@ -47,11 +46,11 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       {next <= thumbnails.length ? (
-        <Box as='main' w='full' maxW={['25rem', '25rem', '77rem']} mt={{sm: 6, md: 0}} mb={20} px={4}>
+        <Box as='main' w='full' maxW={['25rem', '25rem', '77rem']} mt={{sm: 6, md: 4}} px={4}>
           <Heading textAlign='center' fontSize={{sm: '2xl', md: '3xl'}}>
             Which one draw your attention?
           </Heading>
-          <Flex flexDir={['column', 'column', 'row']} columnGap='min(5vw, 3rem)' rowGap={12} mt={[8, 8, 16]}>
+          <Flex flexDir={['column', 'column', 'row']} columnGap='min(5vw, 3rem)' rowGap={12} mt={[8, 8, 16]} mb={4}>
             {[
               { dir: left, type: IndiceActionType.LEFT },
               { dir: right, type: IndiceActionType.RIGHT },

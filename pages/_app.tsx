@@ -8,7 +8,7 @@ import AuthProvider from '../store/auth';
 import RightDrawer from '../components/RightDrawer';
 
 const breakpoints = {
-  sm: '320px',
+  sm: '420px',
   md: '900px',
   lg: '960px',
   xl: '1200px',
