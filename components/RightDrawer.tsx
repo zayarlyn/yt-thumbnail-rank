@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { AuthStoreType, useAuthStore } from '../store/auth';
-import { uploadThumbnail } from '../firebaseUtils';
+import { AddToUserThumbnails, uploadThumbnail } from '../firebaseUtils';
 import Thumbnail from './Thumbnail';
 
 const RightDrawer = () => {
@@ -31,19 +31,20 @@ const RightDrawer = () => {
 
   const handleUpload = async () => {
     setLoading(true);
-    await uploadThumbnail({yt_link: url, by: user?.uid});
+    const {id} = await uploadThumbnail({yt_link: url, by: user?.uid});
+    await AddToUserThumbnails(id);
     toast({
       title: 'thumbnail uploaded',
       description: 'Thank you for your contribution',
       status: 'success',
       position: 'top',
-      duration: 2500,
+      duration: 2000,
     });
+    setUrl('');
     setLoading(false);
     setThumb_link(undefined);
     onClose();
   };
-
   const handleGenerate = () => {
     setThumb_link(url);
   };

@@ -26,6 +26,7 @@ const ranking: NextPage<SSProps> = ({ rankings, selected }) => {
           <TabList>
             {[5, 10, 15].map((i) => (
               <Tab
+                key={i}
                 onClick={() => router.push(i + '')}
                 _selected={{ borderRadius: 4, bgColor: 'teal.200' }}
               >

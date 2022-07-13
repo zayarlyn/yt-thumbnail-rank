@@ -1,16 +1,22 @@
 import { useState, useEffect } from 'react';
-import { getPublicUser } from '../firebaseUtils';
+import { getPrivateUser, getPublicUser } from '../firebaseUtils';
 
-interface Public {
+interface USER {
   username: string;
+  clicked?: number;
+  seen?: number;
+  uid?: string
 }
 
-const useUserData = ({ PRIVATE }: { PRIVATE?: boolean }) => {
-  const [data, setData] = useState<Public|null>(null);
+const useUserData = ({ PRIVATE, uid }: { PRIVATE?: boolean; uid: string }) => {
+  const [data, setData] = useState<USER | null>(null);
   useEffect(() => {
     (async () => {
-      const res = await getPublicUser('u0B7XAIUSHUUg1pWqLW1atuyv2w2');
-      setData(res as Public)
+      const [Public, Private] = await Promise.all([
+        getPublicUser(uid),
+        PRIVATE ? getPrivateUser(uid) : [],
+      ]);
+      setData({ ...Public, ...Private } as USER);
     })();
   }, []);
   return data;

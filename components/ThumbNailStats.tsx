@@ -15,7 +15,6 @@ import { ViewIcon, StarIcon } from '@chakra-ui/icons';
 import { ThumbNail } from '../firebaseUtils';
 import Thumbnail from './Thumbnail';
 import useUserData from '../hooks/useUserData';
-import Link from 'next/link';
 
 interface Props extends ThumbNail {
   idx: number;
@@ -25,7 +24,7 @@ const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx }) => 
   if (!seen || !pt) return null;
   const d = new Date(at);
   const rating = (pt * 100) / seen;
-  const publicUser = by ? useUserData({}) : null;
+  const publicUser = by ? useUserData({uid: by}) : null;
 
   return (
     <GridItem

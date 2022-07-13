@@ -46,7 +46,7 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       {next <= thumbnails.length ? (
-        <Box as='main' w='full' maxW={['25rem', '25rem', '77rem']} mt={{sm: 6, md: 4}} px={4}>
+        <Box as='main' w='full' maxW={['25rem', '25rem', '77rem']} mt={{sm: 6, md: 4}} mb={{lg: 20}} px={4}>
           <Heading textAlign='center' fontSize={{sm: '2xl', md: '3xl'}}>
             Which one draw your attention?
           </Heading>

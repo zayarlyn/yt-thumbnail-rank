@@ -12,6 +12,7 @@ import {
   getDoc,
   limit,
   updateDoc,
+  arrayUnion,
 } from 'firebase/firestore';
 import { app, db } from './firebaseconfig';
 
@@ -89,29 +90,41 @@ export const getPublicUser = async (id: string) => {
   const raw = await getDoc(doc(db, 'users', id));
   return { ...raw.data() };
 };
+export const getPrivateUser = async (id: string) => {
+  const raw = await getDoc(doc(db, 'users', id, 'private', 'profile'));
+  return { ...raw.data() };
+};
 
 export const updatePublicUser = async (public_data: Public_data) => {
   const user = getAuth(app).currentUser;
-  if (!user) return;
-  return updateDoc(doc(db, 'users', user?.uid), { ...public_data });
+  return user ? updateDoc(doc(db, 'users', user?.uid), { ...public_data }) : null;
 };
 
 export const updatePrivateUser = async ({ seen, clicked }: Private_data) => {
   const user = getAuth(app).currentUser;
-  if (!user) return;
-  return setDoc(
-    doc(db, 'users', user?.uid, 'private', 'profile'),
-    { seen: increment(seen ? 1 : 0), clicked: increment(clicked ? 1 : 0) },
-    { merge: true }
-  );
+  return user
+    ? setDoc(
+        doc(db, 'users', user?.uid, 'private', 'profile'),
+        { seen: increment(seen ? 1 : 0), clicked: increment(clicked ? 1 : 0) },
+        { merge: true }
+      )
+    : null;
+};
+
+export const AddToUserThumbnails = (thumbId: string) => {
+  const user = getAuth(app).currentUser;
+  return user
+    ? setDoc(doc(db, 'users', user?.uid), { thumbnails: arrayUnion(thumbId) }, { merge: true })
+    : null;
 };
 
 export const FisherYatesRandomize = (thumbnails: ThumbNail[]) => {
+  // Learn more https://www.geeksforgeeks.org/shuffle-a-given-array-using-fisher-yates-shuffle-algorithm/
   for (let i = thumbnails.length - 1; i > 0; i--) {
     const j = Math.round(Math.random() * i);
     [thumbnails[i], thumbnails[j]] = [thumbnails[j], thumbnails[i]];
   }
-  return thumbnails
+  return thumbnails;
 };
 
 export interface ThumbNail {

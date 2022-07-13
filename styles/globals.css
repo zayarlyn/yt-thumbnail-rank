@@ -8,8 +8,3 @@
   font-family: 'Inter';
 }
 
-@layer component {
-  .flex-x {
-    @apply flex items-center justify-between;
-  }
-}
