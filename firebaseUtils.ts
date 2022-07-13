@@ -11,6 +11,7 @@ import {
   orderBy,
   getDoc,
   limit,
+  updateDoc,
 } from 'firebase/firestore';
 import { app, db } from './firebaseconfig';
 
@@ -89,6 +90,12 @@ export const getPublicUser = async (id: string) => {
   return { ...raw.data() };
 };
 
+export const updatePublicUser = async (public_data: Public_data) => {
+  const user = getAuth(app).currentUser;
+  if (!user) return;
+  return updateDoc(doc(db, 'users', user?.uid), {...public_data});
+};
+
 export interface ThumbNail {
   id: string;
   at: number;
@@ -105,5 +112,9 @@ export enum TFType {
 
 export interface FetchThumbnails {
   type: TFType;
-  LIMIT?: number
+  LIMIT?: number;
+}
+
+interface Public_data {
+  username?: string;
 }

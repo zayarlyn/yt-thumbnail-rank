@@ -41,7 +41,7 @@ const UserPfp: React.FC<Props> = ({ username, photoUrl }) => {
   };
 
   return (
-    <Box w={['90%', '35%']} maxW={[64]} mx='auto'>
+    <Box w={['90%', '35%']} flexShrink={0} maxW={[64]} mx='auto'>
       <AspectRatio w='full' ratio={1 / 1}>
         <Box onClick={handleToggleEdit} borderRadius='50%' position='relative' role='group'>
           <Avatar name={username} src={url ?? ''} w='full' h='full' />
