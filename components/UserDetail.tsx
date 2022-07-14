@@ -1,17 +1,22 @@
 import { Box, VStack, Text } from '@chakra-ui/react';
 import { User } from 'firebase/auth';
-import useUserData from '../hooks/useUserData';
+import useUserData, { UserData } from '../hooks/useUserData';
 import ProfileField from './ProfileField';
 import UserPfp from './UserPfp';
 
-const UserDetail = ({ user }: { user: User }) => {
+interface Props {
+user: User;
+userData: UserData;
+}
+
+const UserDetail: React.FC<Props> = ({ user, userData }) => {
   // I didn't use username returned from firestore as reading from browser storage is faster (blazingly fast)
   const username = user?.displayName ?? user?.uid.slice(0, 9) ?? '';
-  const { clicked, seen } = useUserData({ PRIVATE: true, uid: user.uid }) ?? {};
+  const { clicked, seen } = userData;
 
   return (
     <Box
-      mt={[6]}
+      my={6}
       position='relative'
       display={['block', 'flex']}
       alignItems='center'

@@ -16,9 +16,10 @@ const ProfileField: React.FC<Props> = ({ value, label }) => {
   const handleUpdate = async () => {
     const new_value = inputRef.current?.value;
     if (new_value === value) return;
-    console.log(new_value, value);
-    await updateUserInfo({ displayName: new_value } as User);
-    await updatePublicUser({username: new_value});
+    await Promise.all([
+      updateUserInfo({ displayName: new_value } as User),
+      updatePublicUser({ username: new_value }),
+    ]);
     toast({ description: 'Username updated', status: 'success', position: 'top', duration: 2000 });
   };
 

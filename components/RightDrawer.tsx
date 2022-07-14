@@ -15,6 +15,7 @@ import {
   DrawerBody,
   FormErrorMessage,
   useToast,
+  UseToastOptions,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { AuthStoreType, useAuthStore } from '../store/auth';
@@ -22,7 +23,7 @@ import { AddToUserThumbnails, uploadThumbnail } from '../firebaseUtils';
 import Thumbnail from './Thumbnail';
 
 const RightDrawer = () => {
-  const {user} = useAuthStore() as AuthStoreType;
+  const { user } = useAuthStore() as AuthStoreType;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setLoading] = useState(false);
   const [thumb_link, setThumb_link] = useState<undefined | string>();
@@ -31,15 +32,9 @@ const RightDrawer = () => {
 
   const handleUpload = async () => {
     setLoading(true);
-    const {id} = await uploadThumbnail({yt_link: url, by: user?.uid});
+    const { id } = await uploadThumbnail({ yt_link: url, by: user?.uid });
     await AddToUserThumbnails(id);
-    toast({
-      title: 'thumbnail uploaded',
-      description: 'Thank you for your contribution',
-      status: 'success',
-      position: 'top',
-      duration: 2000,
-    });
+    toast(toastConfig);
     setUrl('');
     setLoading(false);
     setThumb_link(undefined);
@@ -57,7 +52,7 @@ const RightDrawer = () => {
         }
         onClick={onOpen}
         zIndex={5}
-        position='absolute'
+        position='fixed'
         bottom={8}
         right={8}
         bgColor='teal.300'
@@ -120,3 +115,11 @@ const RightDrawer = () => {
 };
 
 export default RightDrawer;
+
+const toastConfig: UseToastOptions = {
+  title: 'thumbnail uploaded',
+  description: 'Thank you for your contribution',
+  status: 'success',
+  position: 'top',
+  duration: 2000,
+};

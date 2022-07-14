@@ -13,6 +13,9 @@ import {
   limit,
   updateDoc,
   arrayUnion,
+  DocumentSnapshot,
+  QueryDocumentSnapshot,
+  DocumentData
 } from 'firebase/firestore';
 import { app, db } from './firebaseconfig';
 
@@ -58,11 +61,7 @@ export const fetchThumbnails = async ({ type, LIMIT }: FetchThumbnails) => {
         )
       : query(collection(db, 'thumbnails'), orderBy('at', 'desc'));
   const raw = await getDocs(q);
-  return raw.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-    at: doc.data().at.toMillis(),
-  })) as ThumbNail[];
+  return transformToThumbNails(raw.docs);
 };
 
 export const incrementThumb = async (id: string, incre_pt = false) => {
@@ -118,6 +117,20 @@ export const AddToUserThumbnails = (thumbId: string) => {
     : null;
 };
 
+export const getThumbnailsFromIds = async (thumbnails: string[]) => {
+  console.log('internal',thumbnails)
+  const raw = await Promise.all(thumbnails.map(id => getDoc(doc(db, 'thumbnails', id))));
+  return transformToThumbNails(raw);
+}
+
+const transformToThumbNails = (docs : QueryDocumentSnapshot<DocumentData>[] | DocumentSnapshot<DocumentData>[]) => {
+  return docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+    at: doc.data()?.at.toMillis(),
+  })) as ThumbNail[];
+}
+
 export const FisherYatesRandomize = (thumbnails: ThumbNail[]) => {
   // Learn more https://www.geeksforgeeks.org/shuffle-a-given-array-using-fisher-yates-shuffle-algorithm/
   for (let i = thumbnails.length - 1; i > 0; i--) {
@@ -147,10 +160,11 @@ export interface FetchThumbnails {
 }
 
 interface Public_data {
-  username?: string;
+  username: string;
+  thumbnails: string;
 }
 
 interface Private_data {
-  seen?: boolean;
-  clicked?: boolean;
+  seen: boolean;
+  clicked: boolean;
 }

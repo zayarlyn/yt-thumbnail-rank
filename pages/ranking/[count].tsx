@@ -3,6 +3,7 @@ import { fetchThumbnails, TFType, ThumbNail } from '../../firebaseUtils';
 import { NextPage } from 'next';
 import ThumbNailStats from '../../components/ThumbNailStats';
 import { useRouter } from 'next/router';
+import ThumbnailList from '../../components/ThumbnailList';
 
 interface SSProps {
   rankings: ThumbNail[];
@@ -20,7 +21,14 @@ const ranking: NextPage<SSProps> = ({ rankings, selected }) => {
       h='calc(100vh - 60px)'
       overflowY='scroll'
     >
-      <Flex fontSize={['md','lg']} fontWeight='medium' alignItems='center' py={4} mt={4} {...dimension}>
+      <Flex
+        fontSize={['md', 'lg']}
+        fontWeight='medium'
+        alignItems='center'
+        py={4}
+        mt={4}
+        {...dimension}
+      >
         Top
         <Tabs size={['sm', 'md']} defaultIndex={selected - 1} mx={3} variant='solid-rounded'>
           <TabList>
@@ -37,11 +45,7 @@ const ranking: NextPage<SSProps> = ({ rankings, selected }) => {
         </Tabs>
         thumbnails
       </Flex>
-      <Grid as='main' flexGrow={1} fontSize='lg' rowGap={16} mb={20} {...dimension}>
-        {rankings?.map((thumbnail, i) => (
-          <ThumbNailStats key={thumbnail.id} {...thumbnail} idx={i} />
-        ))}
-      </Grid>
+      <ThumbnailList thumbnails={rankings} />
     </Box>
   );
 };

@@ -21,10 +21,10 @@ interface Props extends ThumbNail {
 }
 
 const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx }) => {
-  if (!seen || !pt) return null;
-  const d = new Date(at);
-  const rating = (pt * 100) / seen;
+  // if (!seen || !pt) return null;
+  const rating = seen && pt ? (pt * 100) / seen : 0;
   const publicUser = by ? useUserData({uid: by}) : null;
+  const d = new Date(at);
 
   return (
     <GridItem
