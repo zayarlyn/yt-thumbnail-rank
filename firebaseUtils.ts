@@ -118,7 +118,6 @@ export const AddToUserThumbnails = (thumbId: string) => {
 };
 
 export const getThumbnailsFromIds = async (thumbnails: string[]) => {
-  console.log('internal',thumbnails)
   const raw = await Promise.all(thumbnails.map(id => getDoc(doc(db, 'thumbnails', id))));
   return transformToThumbNails(raw);
 }

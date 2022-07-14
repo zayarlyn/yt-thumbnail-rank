@@ -8,6 +8,7 @@ import UserThumbnails from '../components/UserThumbnails';
 const profile: NextPage = () => {
   const { user } = useAuthStore() as AuthStoreType;
   const userData = useUserData({ PRIVATE: true, uid: user?.uid });
+  console.log(user, userData);
 
   return (
     <Box display='Grid' placeItems='center'>

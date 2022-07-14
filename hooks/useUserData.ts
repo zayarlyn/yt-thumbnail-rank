@@ -20,7 +20,7 @@ const useUserData = ({ PRIVATE, uid }: { PRIVATE?: boolean; uid?: string }) => {
       ]);
       setData({ ...Public, ...Private } as UserData);
     })();
-  }, []);
+  }, [uid]);
   return data;
 };
 
