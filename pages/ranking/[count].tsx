@@ -1,5 +1,5 @@
 import { Box, Flex, Grid, Tab, TabList, Tabs } from '@chakra-ui/react';
-import { fetchThumbnails, TFType, ThumbNail } from '../../firebaseUtils';
+import { fetchThumbnails, TFType, ThumbNail } from '../../lib/firebaseUtils';
 import { NextPage } from 'next';
 import ThumbNailStats from '../../components/ThumbNailStats';
 import { useRouter } from 'next/router';
@@ -27,7 +27,8 @@ const ranking: NextPage<SSProps> = ({ rankings, selected }) => {
         alignItems='center'
         py={4}
         mt={4}
-        {...dimension}
+        maxW={['27rem', '27rem', 'none']}
+        w={['90%', '90%', '41rem', '47rem']}
       >
         Top
         <Tabs size={['sm', 'md']} defaultIndex={selected - 1} mx={3} variant='solid-rounded'>
@@ -61,7 +62,3 @@ export async function getServerSideProps({ query }: { query: { count: number } }
   return { props: { rankings, selected: (LIMIT / 5) | 0 } };
 }
 
-const dimension = {
-  maxW: ['27rem', '27rem', 'none'],
-  w: ['90%', '90%', '41rem', '47rem'],
-};

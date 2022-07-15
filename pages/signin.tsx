@@ -14,13 +14,13 @@ import {
 } from '@chakra-ui/react';
 import { app } from '../firebaseconfig';
 import { useAuthStore, AuthStoreType } from '../store/auth';
-import { actionCodeSettings, isSignInLink } from '../firebaseUtils';
+import { actionCodeSettings, isSignInLink } from '../lib/firebaseUtils';
 
 const signin = () => {
   const [email, setEmail] = useState('');
   const [isSent, setIsSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { isAuthenticated } = useAuthStore() as AuthStoreType;
+  const { user: isAuthenticated } = useAuthStore() as AuthStoreType;
   const router = useRouter();
 
   useEffect(() => {
@@ -28,12 +28,16 @@ const signin = () => {
       const LINKED_EMAIL = window.localStorage.getItem('emailForSignIn') || '';
       const EMAIL_LINK = window.location.href;
       if (!LINKED_EMAIL || !isSignInLink(EMAIL_LINK)) return;
-      const detail = await signInWithEmailLink(getAuth(app), LINKED_EMAIL, EMAIL_LINK);
-      console.log(detail);
-      router.push('/');
+      const user = await signInWithEmailLink(getAuth(app), LINKED_EMAIL, EMAIL_LINK);
+      const headers= {"Content-Type": "application/json"};
+      const body = JSON.stringify(user);
+      const res = await fetch('/api/login',{method: 'POST', headers, body});
+      console.log('response', res);
+
+      // router.push('/');
     })();
   }, []);
-
+  
   const handleSignIn = async () => {
     setLoading(true);
     await sendSignInLinkToEmail(getAuth(app), email, actionCodeSettings);
@@ -42,9 +46,9 @@ const signin = () => {
     setIsSent(true);
   };
 
-  if (isAuthenticated === 'unknown') {
-    return null; // add loader
-  }
+  // if (isAuthenticated === 'unknown') {
+  //   return null; // add loader
+  // }
 
   if (isAuthenticated) {
     router.push('/');

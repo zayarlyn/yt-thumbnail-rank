@@ -12,18 +12,19 @@ import {
   ChakraProps,
 } from '@chakra-ui/react';
 import { ViewIcon, StarIcon } from '@chakra-ui/icons';
-import { ThumbNail } from '../firebaseUtils';
+import { ThumbNail } from '../lib/firebaseUtils';
 import Thumbnail from './Thumbnail';
 import useUserData from '../hooks/useUserData';
 
 interface Props extends ThumbNail {
   idx: number;
+  isProfile?: boolean;
 }
 
-const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx }) => {
+const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx, isProfile }) => {
   // if (!seen || !pt) return null;
   const rating = seen && pt ? (pt * 100) / seen : 0;
-  const publicUser = by ? useUserData({uid: by}) : null;
+  const publicUser = by ? useUserData({ uid: by }) : null;
   const d = new Date(at);
 
   return (
@@ -78,12 +79,14 @@ const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx }) => 
           alignItems='center'
           justifyContent='space-between'
         >
-          <Text fontSize={[13, 'sm']}>
-            submitted by{' '}
-            <span className='font-semibold text-primary'>
-              {publicUser ? publicUser.username : 'a contributer'}
-            </span>
-          </Text>
+          {isProfile ? null : (
+            <Text fontSize={[13, 'sm']}>
+              submitted by{' '}
+              <span className='font-semibold text-primary'>
+                {publicUser ? publicUser.username : 'a contributer'}
+              </span>
+            </Text>
+          )}
           <Flex fontSize={12}>
             <Text>{d.toLocaleDateString()}</Text>
             <Text fontSize={14} lineHeight={1.3} fontWeight='medium' mx={1.5}>

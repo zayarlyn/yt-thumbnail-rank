@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { AuthStoreType, useAuthStore } from '../store/auth';
-import { AddToUserThumbnails, uploadThumbnail } from '../firebaseUtils';
+import { AddToUserThumbnails, uploadThumbnail } from '../lib/firebaseUtils';
 import Thumbnail from './Thumbnail';
 
 const RightDrawer = () => {

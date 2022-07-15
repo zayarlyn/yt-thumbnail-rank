@@ -2,7 +2,7 @@ import { useReducer } from 'react';
 import type { NextPage } from 'next';
 import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import Head from 'next/head';
-import { fetchThumbnails, ThumbNail, parseVideoId, TFType, FisherYatesRandomize } from '../firebaseUtils';
+import { fetchThumbnails, ThumbNail, parseVideoId, TFType, FisherYatesRandomize } from '../lib/firebaseUtils';
 import Thumbnail from '../components/Thumbnail';
 
 export enum IndiceActionType {
@@ -38,7 +38,7 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
     next: 2,
   });
 
-  // console.log('nails', thumbnails);
+  return null;
   return (
     <Box display='grid' h='calc(100vh - 6rem)' flexDir='column' placeItems='center'>
       <Head>

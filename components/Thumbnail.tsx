@@ -8,7 +8,7 @@ import {
   parseLinkWithFallback,
   parseVideoId,
   updatePrivateUser,
-} from '../firebaseUtils';
+} from '../lib/firebaseUtils';
 
 interface Props {
   id?: string;

@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { EditIcon, CheckIcon } from '@chakra-ui/icons';
 import { User } from 'firebase/auth';
-import { updateUserInfo } from '../firebaseUtils';
+import { updateUserInfo } from '../lib/firebaseUtils';
 
 interface Props {
   username: string;

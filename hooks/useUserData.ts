@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getPrivateUser, getPublicUser } from '../firebaseUtils';
+import { getPrivateUser, getPublicUser } from '../lib/firebaseUtils';
 
 export interface UserData {
   username: string;
@@ -11,6 +11,7 @@ export interface UserData {
 
 const useUserData = ({ PRIVATE, uid }: { PRIVATE?: boolean; uid?: string }) => {
   const [data, setData] = useState<UserData | null>(null);
+  
   useEffect(() => {
     if (!uid) return;
     (async () => {

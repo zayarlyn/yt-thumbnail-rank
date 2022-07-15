@@ -17,7 +17,7 @@ import {
   QueryDocumentSnapshot,
   DocumentData
 } from 'firebase/firestore';
-import { app, db } from './firebaseconfig';
+import { app, db } from '../firebaseconfig';
 
 export const actionCodeSettings = {
   url: 'http://localhost:3000/signin',
@@ -159,11 +159,11 @@ export interface FetchThumbnails {
 }
 
 interface Public_data {
-  username: string;
-  thumbnails: string;
+  username?: string;
+  thumbnails?: string;
 }
 
 interface Private_data {
-  seen: boolean;
-  clicked: boolean;
+  seen?: boolean;
+  clicked?: boolean;
 }
