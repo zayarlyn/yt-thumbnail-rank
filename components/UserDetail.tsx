@@ -1,19 +1,16 @@
 import { Box, VStack, Text } from '@chakra-ui/react';
-import { User } from 'firebase/auth';
-import useUserData, { UserData } from '../hooks/useUserData';
+import { UserData } from '../lib/firebaseUtils';
 import ProfileField from './ProfileField';
 import UserPfp from './UserPfp';
 
 interface Props {
-  user: User;
   userData: UserData;
   isPrivate?: boolean;
 }
 
-const UserDetail: React.FC<Props> = ({ user, userData, isPrivate }) => {
-  // I didn't use username returned from firestore as reading from browser storage is faster (blazingly fast)
-  const username = user?.displayName ?? user?.uid.slice(0, 9) ?? '';
-  const { clicked, seen } = userData;
+const UserDetail: React.FC<Props> = ({ userData, isPrivate }) => {
+  const { username: uname, uid, photoUrl, email, clicked, seen } = userData;
+  const username = uname ?? uid?.slice(0, 9) ?? '';
 
   return (
     <Box
@@ -23,7 +20,7 @@ const UserDetail: React.FC<Props> = ({ user, userData, isPrivate }) => {
       alignItems='center'
       columnGap={{ sm: '4vw' }}
     >
-      <UserPfp username={username ?? ''} photoUrl={user.photoURL} />
+      <UserPfp username={username ?? ''} photoUrl={photoUrl ?? ''} />
       <VStack align='stratch' flexGrow={{ sm: 1 }} p={2} mt={[4, 0]} spacing={[3, 2]}>
         {isPrivate ? (
           <>
@@ -31,7 +28,7 @@ const UserDetail: React.FC<Props> = ({ user, userData, isPrivate }) => {
             <Box pl={2}>
               email:
               <Text as='span' ml={2} fontWeight='medium'>
-                {user.email}
+                {email}
               </Text>
             </Box>
             <Box pl={2}>

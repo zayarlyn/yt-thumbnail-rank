@@ -9,14 +9,14 @@ import {
   useToast,
   AspectRatio,
   ChakraProps,
+  UseToastOptions,
 } from '@chakra-ui/react';
 import { EditIcon, CheckIcon } from '@chakra-ui/icons';
-import { User } from 'firebase/auth';
-import { updateUserInfo } from '../lib/firebaseUtils';
+import { updatePublicUser } from '../lib/firebaseUtils';
 
 interface Props {
   username: string;
-  photoUrl: string | null;
+  photoUrl: string;
 }
 
 const UserPfp: React.FC<Props> = ({ username, photoUrl }) => {
@@ -25,15 +25,10 @@ const UserPfp: React.FC<Props> = ({ username, photoUrl }) => {
   const toast = useToast();
 
   const handleUpdatePfp = async () => {
-    const new_pfp = urlRef.current?.value ?? null;
+    const new_pfp = urlRef.current?.value ?? '';
     setLocal({ url: new_pfp, isEditing: false });
-    await updateUserInfo({ photoURL: new_pfp } as User);
-    toast({
-      description: 'Profile picture updated',
-      status: 'success',
-      position: 'top',
-      duration: 2000,
-    });
+    await updatePublicUser({photoUrl: new_pfp});
+    toast(toastOptions);
   };
 
   const handleToggleEdit = () => {
@@ -67,6 +62,13 @@ const UserPfp: React.FC<Props> = ({ username, photoUrl }) => {
 };
 
 export default UserPfp;
+
+const toastOptions: UseToastOptions = {
+      description: 'Profile picture updated',
+      status: 'success',
+      position: 'top',
+      duration: 2000,
+    }
 
 const iconprops = {
   position: 'absolute',

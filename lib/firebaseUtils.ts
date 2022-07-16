@@ -15,7 +15,7 @@ import {
   arrayUnion,
   DocumentSnapshot,
   QueryDocumentSnapshot,
-  DocumentData
+  DocumentData,
 } from 'firebase/firestore';
 import { app, db } from '../firebaseconfig';
 
@@ -79,24 +79,36 @@ export const parseLinkWithFallback = (url: string, isErr = false) => {
     : `https://img.youtube.com/vi/${vId}/maxresdefault.jpg`;
 };
 
-export const updateUserInfo = async (new_data: User) => {
-  const user = getAuth(app).currentUser;
-  if (!user) return;
-  return updateProfile(user, new_data);
+// export const updateUserInfo = async (new_data: User) => {
+//   const user = getAuth(app).currentUser;
+//   if (!user) return;
+//   return updateProfile(user, new_data);
+// };
+
+export const isNewUser = ({ createdAt, lastLoginAt }: MetaData) => {
+  return [createdAt, lastLoginAt];
 };
 
-export const getPublicUser = async (id: string) => {
-  const raw = await getDoc(doc(db, 'users', id));
+export const getPublicUser = async (uid: string) => {
+  const raw = await getDoc(doc(db, 'users', uid));
+  return { uid, ...raw.data() };
+};
+export const getPrivateUser = async (uid: string) => {
+  const raw = await getDoc(doc(db, 'users', uid, 'private', 'profile'));
   return { ...raw.data() };
 };
-export const getPrivateUser = async (id: string) => {
-  const raw = await getDoc(doc(db, 'users', id, 'private', 'profile'));
-  return { ...raw.data() };
+
+export const getUser = async (uid: string) => {
+  const [publicData, privateData] = await Promise.all([
+    await getPublicUser(uid),
+    await getPrivateUser(uid),
+  ]);
+  return { ...publicData, ...privateData };
 };
 
 export const updatePublicUser = async (public_data: Public_data) => {
   const user = getAuth(app).currentUser;
-  return user ? updateDoc(doc(db, 'users', user?.uid), { ...public_data }) : null;
+  return user ? setDoc(doc(db, 'users', user.uid), { ...public_data }, { merge: true }) : null;
 };
 
 export const updatePrivateUser = async ({ seen, clicked }: Private_data) => {
@@ -118,17 +130,19 @@ export const AddToUserThumbnails = (thumbId: string) => {
 };
 
 export const getThumbnailsFromIds = async (thumbnails: string[]) => {
-  const raw = await Promise.all(thumbnails.map(id => getDoc(doc(db, 'thumbnails', id))));
+  const raw = await Promise.all(thumbnails.map((id) => getDoc(doc(db, 'thumbnails', id))));
   return transformToThumbNails(raw);
-}
+};
 
-const transformToThumbNails = (docs : QueryDocumentSnapshot<DocumentData>[] | DocumentSnapshot<DocumentData>[]) => {
+const transformToThumbNails = (
+  docs: QueryDocumentSnapshot<DocumentData>[] | DocumentSnapshot<DocumentData>[]
+) => {
   return docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
     at: doc.data()?.at.toMillis(),
   })) as ThumbNail[];
-}
+};
 
 export const FisherYatesRandomize = (thumbnails: ThumbNail[]) => {
   // Learn more https://www.geeksforgeeks.org/shuffle-a-given-array-using-fisher-yates-shuffle-algorithm/
@@ -158,12 +172,24 @@ export interface FetchThumbnails {
   LIMIT?: number;
 }
 
-interface Public_data {
+export interface Public_data {
+  uid?: string;
+  email?: string;
   username?: string;
-  thumbnails?: string;
+  photoUrl?: string;
+  thumbnails?: string[];
 }
 
-interface Private_data {
+export interface Private_data {
+  email?: string;
   seen?: boolean;
   clicked?: boolean;
 }
+
+export type UserData = Public_data & Private_data;
+
+export interface MetaData {
+  createdAt: string;
+  lastLoginAt: string;
+}
+// console.log(getAuth(app).currentUser);

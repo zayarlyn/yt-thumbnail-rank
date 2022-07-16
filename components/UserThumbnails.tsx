@@ -2,7 +2,7 @@ import { Box, Text } from '@chakra-ui/react';
 import useThumbnailsFromIds from '../hooks/useThumbnailsFromIds';
 import ThumbnailList from './ThumbnailList';
 interface Props {
-  thumbIds: string[];
+  thumbIds?: string[];
   isPrivate?: boolean;
 }
 const UserThumbnails: React.FC<Props> = ({ thumbIds, isPrivate }) => {

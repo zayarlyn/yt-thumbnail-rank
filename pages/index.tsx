@@ -38,7 +38,6 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
     next: 2,
   });
 
-  return null;
   return (
     <Box display='grid' h='calc(100vh - 6rem)' flexDir='column' placeItems='center'>
       <Head>

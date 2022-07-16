@@ -3,12 +3,7 @@ import Image from 'next/image';
 import { AspectRatio } from '@chakra-ui/react';
 import React from 'react';
 import { IndiceAction, IndiceActionType } from '../pages';
-import {
-  incrementThumb,
-  parseLinkWithFallback,
-  parseVideoId,
-  updatePrivateUser,
-} from '../lib/firebaseUtils';
+import { incrementThumb, parseLinkWithFallback, updatePrivateUser } from '../lib/firebaseUtils';
 
 interface Props {
   id?: string;
@@ -25,8 +20,7 @@ const Thumbnail: React.FC<Props> = ({ id, v_link, active, dispatch, type }) => {
     setSrc(parseLinkWithFallback(v_link));
     // record view count
     if (!id || !active) return;
-    updatePrivateUser({ seen: true });
-    // incrementThumb(id);
+    Promise.all([updatePrivateUser({ seen: true }), incrementThumb(id)]);
   }, [v_link]);
 
   const handleClick = async () => {

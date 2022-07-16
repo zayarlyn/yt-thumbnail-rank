@@ -1,11 +1,17 @@
 import Link from 'next/link';
 import { AuthStoreType, useAuthStore } from '../store/auth';
 import { signOutUser } from '../lib/firebaseUtils';
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, useToast, UseToastOptions } from '@chakra-ui/react';
 import { Link as Clink } from '@chakra-ui/react';
 
 const CoreHeader = () => {
-  const { user: isAuthenticated } = useAuthStore() as AuthStoreType;
+  const { user } = useAuthStore() as AuthStoreType;
+  const toast = useToast();
+
+  const handleSignOut = async () => {
+    await Promise.all([signOutUser(), fetch('/api/logout')]);
+    toast(toastOptions);
+  };
 
   return (
     <header>
@@ -21,12 +27,12 @@ const CoreHeader = () => {
           </Link>
         </Box>
         <Flex columnGap={4}>
-          {isAuthenticated ? (
+          {user === null ? null : user ? (
             <>
-              <Link href={'/profile/'+isAuthenticated.uid}>
+              <Link href={'/profile/' + user.uid}>
                 <Clink>profile</Clink>
               </Link>
-              <button onClick={signOutUser}>sign out</button>
+              <button onClick={handleSignOut}>sign out</button>
             </>
           ) : (
             <Link href='/signin'>
@@ -40,3 +46,10 @@ const CoreHeader = () => {
 };
 
 export default CoreHeader;
+
+const toastOptions: UseToastOptions = {
+  description: 'successfully logged out',
+  status: 'success',
+  duration: 2000,
+  position: 'top',
+};

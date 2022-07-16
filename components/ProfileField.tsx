@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { Text, Editable, Box, EditablePreview, EditableInput, useToast } from '@chakra-ui/react';
 import EditableControls from './EditableControls';
-import { updatePublicUser, updateUserInfo } from '../lib/firebaseUtils';
+import { updatePublicUser } from '../lib/firebaseUtils';
 import { User } from 'firebase/auth';
 
 interface Props {
@@ -15,11 +15,8 @@ const ProfileField: React.FC<Props> = ({ value, label }) => {
 
   const handleUpdate = async () => {
     const new_value = inputRef.current?.value;
-    if(new_value === value) return;
-    await Promise.all([
-      updateUserInfo({ displayName: new_value } as User),
-      updatePublicUser({ username: new_value }),
-    ]);
+    if (new_value === value) return;
+    await updatePublicUser({ username: new_value });
     toast({ description: 'Username updated', status: 'success', position: 'top', duration: 2000 });
   };
 
