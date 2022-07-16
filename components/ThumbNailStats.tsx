@@ -10,11 +10,13 @@ import {
   StatUpArrow,
   StatDownArrow,
   ChakraProps,
+  Link as ChakraLink,
 } from '@chakra-ui/react';
 import { ViewIcon, StarIcon } from '@chakra-ui/icons';
 import { ThumbNail } from '../lib/firebaseUtils';
 import Thumbnail from './Thumbnail';
 import useUserData from '../hooks/useUserData';
+import Link from 'next/link';
 
 interface Props extends ThumbNail {
   idx: number;
@@ -45,7 +47,7 @@ const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx, isPro
           <Text fontWeight='medium'>Watch on Youtube</Text>
         </Box>
       </Box>
-      <Box pl={{ md: 2 }} w={{ md: '15rem' }}>
+      <Flex flexDir='column' justifyContent='space-between' pl={{ md: 2 }} w={{ md: '15rem' }}>
         <StatGroup
           pt={['4vw', 5, 2]}
           display={['flex', 'flex', 'grid']}
@@ -71,7 +73,7 @@ const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx, isPro
           </Stat>
         </StatGroup>
         <Box
-          mt={[2, 4, 6, 16]}
+          // mt={[2, 4, 6, 16]}
           display='flex'
           flexWrap='wrap'
           columnGap={6}
@@ -81,10 +83,18 @@ const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx, isPro
         >
           {isProfile ? null : (
             <Text fontSize={[13, 'sm']}>
-              submitted by{' '}
-              <span className='font-semibold text-primary'>
-                {publicUser ? publicUser.username : 'a contributer'}
-              </span>
+              submitted by {/* <span className='font-semibold text-primary'> */}
+              {publicUser ? (
+                <Link href={'/profile/'+by}>
+                  <ChakraLink fontWeight='semibold' textColor='purple.500'>
+                    {publicUser.username}
+                  </ChakraLink>
+                </Link>
+              ) : (
+                <Text as='span' fontWeight='semibold' textColor='purple.500'>
+                  a contributer
+                </Text>
+              )}
             </Text>
           )}
           <Flex fontSize={12}>
@@ -95,7 +105,7 @@ const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx, isPro
             <Text>{d.toLocaleTimeString()}</Text>
           </Flex>
         </Box>
-      </Box>
+      </Flex>
     </GridItem>
   );
 };

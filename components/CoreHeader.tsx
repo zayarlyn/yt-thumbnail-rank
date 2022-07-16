@@ -23,7 +23,7 @@ const CoreHeader = () => {
         <Flex columnGap={4}>
           {isAuthenticated ? (
             <>
-              <Link href={`/profile/${isAuthenticated.uid}`}>
+              <Link href={'/profile/'+isAuthenticated.uid}>
                 <Clink>profile</Clink>
               </Link>
               <button onClick={signOutUser}>sign out</button>
