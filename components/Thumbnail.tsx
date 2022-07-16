@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { AspectRatio } from '@chakra-ui/react';
-import React from 'react';
+import { motion } from 'framer-motion';
 import { IndiceAction, IndiceActionType } from '../pages';
 import { incrementThumb, parseLinkWithFallback, updatePrivateUser } from '../lib/firebaseUtils';
 
@@ -36,14 +36,17 @@ const Thumbnail: React.FC<Props> = ({ id, v_link, active, dispatch, type }) => {
 
   return (
     <AspectRatio
+      as={motion.div}
+      ratio={16 / 9}
       w='full'
       cursor={active ? 'pointer' : ''}
       border='3px solid'
       position='relative'
-      transitionDuration='300ms'
-      _hover={{ transform: active ? 'scale(1.05)' : '' }}
-      _active={{ transform: active ? 'scale(.95)' : '' }}
-      ratio={16 / 9}
+      transitionDuration='.3'
+      initial={{ scale: 0.9 }}
+      animate={{ scale: 1, transition: { duration: 0.3 } }}
+      whileHover={{ scale: active ? 1.04 : 1}}
+      whileTap={{ scale: active ? 0.95 : 1 }}
     >
       {src ? (
         <Image

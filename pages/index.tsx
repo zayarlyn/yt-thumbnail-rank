@@ -47,9 +47,9 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
       {next <= thumbnails.length ? (
         <Box as='main' w='full' maxW={['25rem', '25rem', '77rem']} mt={{sm: 6, md: 4}} mb={{lg: 20}} px={4}>
           <Heading textAlign='center' fontSize={{sm: '2xl', md: '3xl'}}>
-            Which one draw your attention?
+            Which one would you watch?
           </Heading>
-          <Flex flexDir={['column', 'column', 'row']} columnGap='min(5vw, 3rem)' rowGap={12} mt={[8, 8, 16]} mb={4}>
+          <Flex flexDir={['column', 'column', 'row']} columnGap='min(5vw, 4rem)' rowGap={12} mt={[8, 8, 16]} mb={4}>
             {[
               { dir: left, type: IndiceActionType.LEFT },
               { dir: right, type: IndiceActionType.RIGHT },

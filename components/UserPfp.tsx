@@ -46,7 +46,7 @@ const UserPfp: React.FC<Props> = ({ username, photoUrl }) => {
       </AspectRatio>
       {isEditing && (
         <Flex w='full' position={{ sm: 'absolute' }} bottom={{ sm: -12 }} mt={4} pb={0}>
-          <Input ref={urlRef} placeholder='profile url' size='sm' />
+          <Input autoFocus defaultValue={photoUrl} ref={urlRef} placeholder='profile url' size='sm' />
           <IconButton
             onClick={handleUpdatePfp}
             bgColor='cyan.300'
