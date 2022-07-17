@@ -2,15 +2,15 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { AspectRatio } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { IndiceAction, IndiceActionType } from '../pages';
+import { A, T } from '../pages';
 import { incrementThumb, parseLinkWithFallback, updatePrivateUser } from '../lib/firebaseUtils';
 
 interface Props {
   id?: string;
   v_link: string;
   active?: boolean;
-  dispatch?: React.Dispatch<IndiceAction>;
-  type?: IndiceActionType;
+  dispatch?: React.Dispatch<A>;
+  type?: T;
 }
 
 const Thumbnail: React.FC<Props> = ({ id, v_link, active, dispatch, type }) => {
@@ -55,6 +55,7 @@ const Thumbnail: React.FC<Props> = ({ id, v_link, active, dispatch, type }) => {
           src={src}
           layout='fill'
           objectFit='cover'
+          draggable={false}
         />
       ) : (
         <></>

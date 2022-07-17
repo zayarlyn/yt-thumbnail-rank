@@ -14,7 +14,7 @@ const CoreHeader = () => {
   };
 
   return (
-    <header>
+    <Box as='header' bgColor='white' zIndex={5} position='sticky' top={0}>
       <Box display='flex' justifyContent='space-between' mx='auto' w='90%' py={4} fontSize='lg'>
         <Box display='flex' gap={4}>
           <Link href='/' scroll={false}>
@@ -41,7 +41,7 @@ const CoreHeader = () => {
           )}
         </Flex>
       </Box>
-    </header>
+    </Box>
   );
 };
 

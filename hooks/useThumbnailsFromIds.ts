@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getThumbnailsFromIds, ThumbNail } from '../lib/firebaseUtils';
 
 const useThumbnailsFromIds = (ids?: string[]) => {
-  const [thumbnails, setThumbnails] = useState<ThumbNail[]>();
+  const [thumbnails, setThumbnails] = useState<ThumbNail[]|null>(null);
   useEffect(() => {
     if (!ids) return;
     (async () => {

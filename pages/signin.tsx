@@ -1,6 +1,5 @@
 import { useEffect, useReducer } from 'react';
 import { useRouter } from 'next/router';
-import { getAuth, sendSignInLinkToEmail, signInWithEmailLink, User } from 'firebase/auth';
 import {
   FormControl,
   FormLabel,
@@ -14,13 +13,14 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import type { UseToastOptions } from '@chakra-ui/react';
-import { app } from '../firebaseconfig';
+import type { User } from 'firebase/auth';
 import { useAuthStore, AuthStoreType } from '../store/auth';
 import {
-  actionCodeSettings,
   isNewUser,
   isSignInLink,
   MetaData,
+  sendSignInLink,
+  signInWithLink,
   updatePublicUser,
 } from '../lib/firebaseUtils';
 
@@ -72,18 +72,17 @@ const signin = () => {
     err: '',
   });
 
-  
   const { user: isAuthenticated } = useAuthStore() as AuthStoreType;
   const router = useRouter();
   const toast = useToast();
-  
+
   useEffect(() => {
     (async () => {
       const LINKED_EMAIL = window.localStorage.getItem('emailForSignIn') || '';
       const EMAIL_LINK = window.location.href;
-      if (!LINKED_EMAIL || !isSignInLink(EMAIL_LINK)) return;
-      const { user } = await signInWithEmailLink(getAuth(app), LINKED_EMAIL, EMAIL_LINK);
-      const isNew = !isNewUser(user.metadata as MetaData);
+      if (!LINKED_EMAIL || !await isSignInLink(EMAIL_LINK)) return;
+      const { user } = await signInWithLink(LINKED_EMAIL, EMAIL_LINK);
+      const isNew = isNewUser(user.metadata as MetaData);
       await Promise.all([
         handleApiLogin(user),
         isNew ? updatePublicUser({ email: user.email as string }) : [],
@@ -92,14 +91,18 @@ const signin = () => {
       router.push('/');
     })();
   }, []);
-  
+
   const handleSignIn = async () => {
-    if (!email) return dispatch({type: T.ERROR, value: "email can't be empty"});
-    dispatch({type: T.LOADING, value: ''})
-    await sendSignInLinkToEmail(getAuth(app), email, actionCodeSettings);
-    window.localStorage.setItem('emailForSignIn', email);
-    dispatch({type: T.LOADING, value: ''})
-    dispatch({type: T.SEND, value: ''})
+    if (!email) return dispatch({ type: T.ERROR, value: "email can't be empty" });
+    dispatch({ type: T.LOADING, value: '' });
+    try {
+      await sendSignInLink(email);
+      window.localStorage.setItem('emailForSignIn', email);
+      dispatch({ type: T.LOADING, value: '' });
+      dispatch({ type: T.SEND, value: '' });
+    } catch (err) {
+      dispatch( {type: T.ERROR, value: (err as Error).message})
+    }
   };
 
   if (isAuthenticated) {

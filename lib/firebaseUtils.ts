@@ -11,12 +11,12 @@ import {
   orderBy,
   getDoc,
   limit,
-  updateDoc,
   arrayUnion,
   DocumentSnapshot,
   QueryDocumentSnapshot,
   DocumentData,
 } from 'firebase/firestore';
+import { sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
 import { app, db } from '../firebaseconfig';
 
 export const actionCodeSettings = {
@@ -28,16 +28,21 @@ export const parseVideoId = (url: string) => {
   return url.match(/(?<=v=)[\w\-]*/)?.[0];
 };
 
-export const isAuthenticated = () => {
-  return getAuth(app).currentUser;
+export const signInWithLink = async (email: string, link: string) => {
+  return signInWithEmailLink(getAuth(app), email, link);
+}
+
+export const sendSignInLink = async (email: string) => {
+   return sendSignInLinkToEmail(getAuth(app), email, actionCodeSettings);
+}
+
+export const isSignInLink = async (link: string) => {
+  return isSignInWithEmailLink(getAuth(app), link);
+  // return link.startsWith('http://localhost:3000/signin?apiKey');
 };
 
 export const signOutUser = async () => {
   return await signOut(getAuth(app));
-};
-
-export const isSignInLink = (link: string) => {
-  return link.startsWith('http://localhost:3000/signin?apiKey');
 };
 
 export const uploadThumbnail = async ({ yt_link, by }: { yt_link: string; by?: string }) => {
@@ -77,13 +82,7 @@ export const parseLinkWithFallback = (url: string, isErr = false) => {
   return isErr
     ? `https://img.youtube.com/vi/${vId}/hqdefault.jpg`
     : `https://img.youtube.com/vi/${vId}/maxresdefault.jpg`;
-};
-
-// export const updateUserInfo = async (new_data: User) => {
-//   const user = getAuth(app).currentUser;
-//   if (!user) return;
-//   return updateProfile(user, new_data);
-// };
+}; 
 
 export const isNewUser = ({ createdAt, lastLoginAt }: MetaData) => {
   return [createdAt, lastLoginAt];

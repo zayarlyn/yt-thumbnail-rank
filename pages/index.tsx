@@ -5,22 +5,22 @@ import Head from 'next/head';
 import { fetchThumbnails, ThumbNail, parseVideoId, TFType, FisherYatesRandomize } from '../lib/firebaseUtils';
 import Thumbnail from '../components/Thumbnail';
 
-export enum IndiceActionType {
+export enum T {
   LEFT = 'LEFT',
   RIGHT = 'RIGHT',
 }
 
-interface State {
+interface S {
   left: number;
   right: number;
   next: number;
 }
 
-export interface IndiceAction {
-  type: IndiceActionType;
+export interface A {
+  type: T;
 }
 
-const indiceReducer = ({ left, right, next }: State, action: IndiceAction) => {
+const reducer = ({ left, right, next }: S, action: A) => {
   switch (action.type) {
     case 'LEFT':
       return { left, right: next, next: next + 1 };
@@ -32,7 +32,7 @@ const indiceReducer = ({ left, right, next }: State, action: IndiceAction) => {
 };
 
 const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
-  const [{ left, right, next }, dispatch] = useReducer(indiceReducer, {
+  const [{ left, right, next }, dispatch] = useReducer(reducer, {
     left: 0,
     right: 1,
     next: 2,
@@ -51,8 +51,8 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
           </Heading>
           <Flex flexDir={['column', 'column', 'row']} columnGap='min(5vw, 4rem)' rowGap={12} mt={[8, 8, 16]} mb={4}>
             {[
-              { dir: left, type: IndiceActionType.LEFT },
-              { dir: right, type: IndiceActionType.RIGHT },
+              { dir: left, type: T.LEFT },
+              { dir: right, type: T.RIGHT },
             ].map(({ dir, type }) => (
               <Thumbnail
               key={dir}
