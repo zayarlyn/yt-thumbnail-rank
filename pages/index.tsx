@@ -5,7 +5,6 @@ import Head from 'next/head';
 import {
   fetchThumbnails,
   ThumbNail,
-  parseVideoId,
   TFType,
   FisherYatesRandomize,
 } from '../lib/firebaseUtils';

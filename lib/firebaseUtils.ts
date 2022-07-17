@@ -20,7 +20,7 @@ import { sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } fro
 import { app, db } from '../firebaseconfig';
 
 export const actionCodeSettings = {
-  url: 'http://localhost:3000/signin',
+  url: 'https://yt-thumbnail-rank.vercel.app/signin',
   handleCodeInApp: true,
 };
 
