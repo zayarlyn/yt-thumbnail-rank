@@ -14,15 +14,15 @@ const UserThumbnails: React.FC<Props> = ({ thumbIds }) => {
       <Text fontSize='xl' mb={8}>
         Uploaded thumbnails
       </Text>
-      {!thumbIds ? (
+      {/* {!thumbIds ? (
         <Text my={8} textAlign='center' textColor='gray.600'>
           no uploaded thumbnails
         </Text>
       ) : userThumbs ? (
         <ThumbnailList isProfile thumbnails={userThumbs} />
-      ) : (
-        <Progress mt={20} mx='auto' width='min(90%, 12rem)' size='xs' isIndeterminate />
-      )}
+      ) : ( */}
+        <Progress mt={20} borderRadius='sm' colorScheme='cyan' mx='auto' width='min(90%, 12rem)' size='xs' isIndeterminate />
+      {/* )} */}
     </Box>
   );
 };
