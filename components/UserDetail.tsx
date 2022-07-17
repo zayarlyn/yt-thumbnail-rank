@@ -20,7 +20,7 @@ const UserDetail: React.FC<Props> = ({ userData, isPrivate }) => {
       alignItems='center'
       columnGap={{ sm: '4vw' }}
     >
-      <UserPfp username={username ?? ''} photoUrl={photoUrl ?? ''} />
+      <UserPfp isPrivate={isPrivate} username={username ?? ''} photoUrl={photoUrl ?? ''} />
       <VStack align='stratch' flexGrow={{ sm: 1 }} p={2} mt={[4, 0]} spacing={[3, 2]}>
         {isPrivate ? (
           <>

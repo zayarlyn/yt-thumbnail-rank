@@ -27,7 +27,7 @@ const CoreHeader = () => {
           </Link>
         </Box>
         <Flex columnGap={4}>
-          {user === null ? null : user ? (
+          {user === undefined ? null : user ? (
             <>
               <Link href={'/profile/' + user.uid}>
                 <Clink>profile</Clink>

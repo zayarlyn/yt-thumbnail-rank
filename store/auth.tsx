@@ -11,7 +11,7 @@ const ctx = createContext<AuthStoreType | null>(null);
 export const useAuthStore = () => useContext(ctx);
 
 const auth = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(getAuth(app), (res) => setUser(res));
