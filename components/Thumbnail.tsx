@@ -30,9 +30,9 @@ const Thumbnail: React.FC<Props> = ({ id, v_link, active, dispatch, type }) => {
     await Promise.all([incrementThumb(id, true), updatePrivateUser({ clicked: true })]);
   };
 
-  const handleError = () => {
-    setSrc(parseLinkWithFallback(v_link, true));
-  };
+  // const handleError = () => {
+  //   setSrc(parseLinkWithFallback(v_link, true));
+  // };
 
   return (
     <AspectRatio
@@ -45,13 +45,14 @@ const Thumbnail: React.FC<Props> = ({ id, v_link, active, dispatch, type }) => {
       transitionDuration='.3'
       initial={{ scale: 0.9 }}
       animate={{ scale: 1, transition: { duration: 0.3 } }}
-      whileHover={{ scale: active ? 1.04 : 1}}
+      whileHover={{ scale: active ? 1.04 : 1 }}
       whileTap={{ scale: active ? 0.95 : 1 }}
     >
       {src ? (
         <Image
+          priority
           onClick={handleClick}
-          onError={handleError}
+          // onError={handleError}
           src={src}
           layout='fill'
           objectFit='cover'

@@ -2,7 +2,13 @@ import { useReducer } from 'react';
 import type { NextPage } from 'next';
 import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import Head from 'next/head';
-import { fetchThumbnails, ThumbNail, parseVideoId, TFType, FisherYatesRandomize } from '../lib/firebaseUtils';
+import {
+  fetchThumbnails,
+  ThumbNail,
+  parseVideoId,
+  TFType,
+  FisherYatesRandomize,
+} from '../lib/firebaseUtils';
 import Thumbnail from '../components/Thumbnail';
 
 export enum T {
@@ -45,17 +51,30 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       {next <= thumbnails.length ? (
-        <Box as='main' w='full' maxW={['25rem', '25rem', '77rem']} mt={{sm: 6, md: 4}} mb={{lg: 20}} px={4}>
-          <Heading textAlign='center' fontSize={{sm: '2xl', md: '3xl'}}>
+        <Box
+          as='main'
+          w='full'
+          maxW={['25rem', '25rem', '77rem']}
+          mt={{ sm: 6, md: 4 }}
+          mb={{ lg: 20 }}
+          px={4}
+        >
+          <Heading textAlign='center' fontSize={{ sm: '2xl', md: '3xl' }}>
             Which one would you watch?
           </Heading>
-          <Flex flexDir={['column', 'column', 'row']} columnGap='min(5vw, 4rem)' rowGap={12} mt={[8, 8, 16]} mb={4}>
+          <Flex
+            flexDir={['column', 'column', 'row']}
+            columnGap='min(5vw, 4rem)'
+            rowGap={12}
+            mt={[8, 8, 16]}
+            mb={4}
+          >
             {[
               { dir: left, type: T.LEFT },
               { dir: right, type: T.RIGHT },
             ].map(({ dir, type }) => (
               <Thumbnail
-              key={dir}
+                key={dir}
                 active
                 id={thumbnails[dir].id}
                 dispatch={dispatch}
@@ -67,7 +86,7 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
         </Box>
       ) : (
         <Text w='40vh' textAlign='center'>
-          No more thumbnails for now. <button>submit</button> your own or touch some grass
+          No more thumbnails for now. <Text cursor='pointer' _hover={{textDecoration: 'underline', textUnderlineOffset: 3}} onClick={() => window.open('https://knowyourmeme.com/memes/touch-grass', '_blank')} fontSize='xl' fontWeight='medium' mt={4} textColor='purple.500'>touch some grass</Text>
         </Text>
       )}
     </Box>

@@ -25,7 +25,7 @@ export const actionCodeSettings = {
 };
 
 export const parseVideoId = (url: string) => {
-  return url.match(/(?<=v=)[\w\-]*/)?.[0];
+  return url.match(/(?<=watch\?v=)[\w\-]*/)?.[0] || url.match(/(?<=youtu\.be\/)[\w\-]*/)?.[0];
 };
 
 export const signInWithLink = async (email: string, link: string) => {
@@ -79,9 +79,10 @@ export const incrementThumb = async (id: string, incre_pt = false) => {
 // https://www.youtube.com/watch?v=nROvY9uiYYk
 export const parseLinkWithFallback = (url: string, isErr = false) => {
   const vId = parseVideoId(url);
-  return isErr
-    ? `https://img.youtube.com/vi/${vId}/hqdefault.jpg`
-    : `https://img.youtube.com/vi/${vId}/maxresdefault.jpg`;
+  // return isErr
+    // ? `https://img.youtube.com/vi/${vId}/hqdefault.jpg`
+    // : `https://img.youtube.com/vi/${vId}/maxresdefault.jpg`;
+    return `https://img.youtube.com/vi/${vId}/hqdefault.jpg`;
 }; 
 
 export const isNewUser = ({ createdAt, lastLoginAt }: MetaData) => {
