@@ -1,7 +1,5 @@
-import '../styles/globals.css';
 import type { AppProps } from 'next/app';
-import App from 'next/app';
-import { AppContext } from 'next/app';
+import App, { AppContext } from 'next/app';
 import CoreHeader from '../components/CoreHeader';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import AuthProvider from '../store/auth';

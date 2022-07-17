@@ -191,4 +191,3 @@ export interface MetaData {
   createdAt: string;
   lastLoginAt: string;
 }
-// console.log(getAuth(app).currentUser);

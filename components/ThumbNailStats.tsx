@@ -83,9 +83,9 @@ const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx, isPro
         >
           {isProfile ? null : (
             <Text fontSize={[13, 'sm']}>
-              submitted by {/* <span className='font-semibold text-primary'> */}
+              submitted by{' '}
               {publicUser ? (
-                <Link href={'/profile/'+by}>
+                <Link href={'/profile/' + by}>
                   <ChakraLink fontWeight='semibold' textColor='purple.500'>
                     {publicUser.username}
                   </ChakraLink>
