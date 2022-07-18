@@ -1,4 +1,4 @@
-import { signOut, getAuth, } from 'firebase/auth';
+import { signOut, getAuth } from 'firebase/auth';
 import {
   collection,
   addDoc,
@@ -30,28 +30,29 @@ export const parseVideoId = (url: string) => {
 
 export const signInWithLink = async (email: string, link: string) => {
   return signInWithEmailLink(getAuth(app), email, link);
-}
+};
 
 export const sendSignInLink = async (email: string) => {
-   return sendSignInLinkToEmail(getAuth(app), email, actionCodeSettings);
-}
+  return sendSignInLinkToEmail(getAuth(app), email, actionCodeSettings);
+};
 
 export const isSignInLink = async (link: string) => {
   return isSignInWithEmailLink(getAuth(app), link);
-  // return link.startsWith('http://localhost:3000/signin?apiKey');
 };
 
 export const signOutUser = async () => {
   return await signOut(getAuth(app));
 };
 
-export const uploadThumbnail = async ({ yt_link, by }: { yt_link: string; by?: string }) => {
+export const uploadThumbnail = async ({ yt_link, descr }: { yt_link: string; descr?: string }) => {
+  const user = getAuth(app).currentUser;
   return addDoc(collection(db, 'thumbnails'), {
+    ...(user && { by: user.uid }),
     at: serverTimestamp(),
-    pt: 0,
+    ...(descr && { descr }),
     seen: 0,
+    pt: 0,
     yt_link,
-    by: by ? by : 'a contributer',
   });
 };
 
@@ -80,13 +81,13 @@ export const incrementThumb = async (id: string, incre_pt = false) => {
 export const parseLinkWithFallback = (url: string, isErr = false) => {
   const vId = parseVideoId(url);
   // return isErr
-    // ? `https://img.youtube.com/vi/${vId}/hqdefault.jpg`
-    // : `https://img.youtube.com/vi/${vId}/maxresdefault.jpg`;
-    return `https://img.youtube.com/vi/${vId}/hqdefault.jpg`;
-}; 
+  // ? `https://img.youtube.com/vi/${vId}/hqdefault.jpg`
+  // : `https://img.youtube.com/vi/${vId}/maxresdefault.jpg`;
+  return `https://img.youtube.com/vi/${vId}/hqdefault.jpg`;
+};
 
 export const isNewUser = ({ createdAt, lastLoginAt }: MetaData) => {
-  return [createdAt, lastLoginAt];
+  // return createdAt, lastLoginAt;
 };
 
 export const getPublicUser = async (uid: string) => {
@@ -157,6 +158,7 @@ export interface ThumbNail {
   id: string;
   at: number;
   yt_link: string;
+  descr?: string;
   by?: string;
   pt: number;
   seen: number;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useReducer } from 'react';
 import {
   Button,
   Drawer,
@@ -18,32 +18,53 @@ import {
   UseToastOptions,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { AuthStoreType, useAuthStore } from '../store/auth';
 import { AddToUserThumbnails, uploadThumbnail } from '../lib/firebaseUtils';
 import Thumbnail from './Thumbnail';
 
+const defaultValue: S = {
+  url: '',
+  descr: '',
+  thumb: null,
+  loading: false,
+};
+
+const reducer = (state: S, action: A): S => {
+  const { type, payload } = action;
+  console.log('payload', payload);
+  switch (type) {
+    case 'URL':
+      return { ...state, url: payload };
+    case 'DESCR':
+      return { ...state, descr: payload };
+    case 'THUMB':
+      return { ...state, thumb: payload };
+    case 'LOADING':
+      return { ...state, loading: !state.loading };
+    case 'MINAZUKI':
+      return { ...defaultValue };
+    default:
+      return state;
+  }
+};
+// three, two, one, FIRE !!
 const RightDrawer = () => {
-  const { user } = useAuthStore() as AuthStoreType;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [loading, setLoading] = useState(false);
-  const [thumb_link, setThumb_link] = useState<undefined | string>();
-  const [url, setUrl] = useState('');
+  const [{ descr, url, loading, thumb }, dispatch] = useReducer(reducer, defaultValue);
   const toast = useToast();
 
   const handleUpload = async () => {
-    setLoading(true);
-    const { id } = await uploadThumbnail({ yt_link: url, by: user?.uid });
+    dispatch({ type: T.LOADING, payload: '' });
+    const { id } = await uploadThumbnail({ yt_link: url, descr: descr.trim() });
     await AddToUserThumbnails(id);
     toast(toastConfig);
-    setUrl('');
-    setLoading(false);
-    setThumb_link(undefined);
+    dispatch({ type: T.MINAZUKI, payload: '' });
     onClose();
   };
   const handleGenerate = () => {
-    setThumb_link(url);
+    dispatch({ type: T.THUMB, payload: url });
   };
 
+  // https://www.youtube.com/watch?v=ktvB21Jnxi4
   return (
     <>
       <Button
@@ -70,13 +91,12 @@ const RightDrawer = () => {
           <DrawerBody>
             <Stack mt={8} spacing={12}>
               <Box>
-                <FormControl isInvalid={thumb_link === ''}>
-                  {/* <FormControl> */}
-                  <FormLabel htmlFor='video_link'>Youtube video Link</FormLabel>
+                <FormControl isInvalid={thumb === ''}>
+                  <FormLabel htmlFor='v_link'>Youtube video Link</FormLabel>
                   <Input
                     value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    id='video_link'
+                    onChange={(e) => dispatch({ type: T.URL, payload: e.target.value })}
+                    id='v_link'
                     placeholder='Please enter video link'
                   />
                   <FormErrorMessage>link is invalid</FormErrorMessage>
@@ -91,21 +111,32 @@ const RightDrawer = () => {
                   Generate thumbnail
                 </Button>
               </Box>
-              {thumb_link && (
+              {thumb ? (
                 <Box>
-                  <Thumbnail v_link={thumb_link} />
+                  <Thumbnail yt_link={thumb} />
+                  <FormLabel htmlFor='v_descr' mt={6}>
+                    Video Description
+                  </FormLabel>
+                  <Input
+                    autoFocus
+                    autoComplete='off'
+                    value={descr}
+                    onChange={(e) => dispatch({ type: T.DESCR, payload: e.target.value })}
+                    id='v_descr'
+                    placeholder='paste original or write your own'
+                  />
                   <Button
                     onClick={handleUpload}
                     isLoading={loading}
-                    mt={8}
                     bg='teal.300'
+                    mt={4}
                     w='full'
                     _hover={{ bgColor: 'teal.200' }}
                   >
                     Upload
                   </Button>
                 </Box>
-              )}
+              ) : null}
             </Stack>
           </DrawerBody>
         </DrawerContent>
@@ -123,3 +154,24 @@ const toastConfig: UseToastOptions = {
   position: 'top',
   duration: 2000,
 };
+// 139
+
+interface S {
+  url: string;
+  descr: string;
+  thumb: string | null;
+  loading: boolean;
+}
+
+enum T {
+  URL = 'URL',
+  DESCR = 'DESCR',
+  THUMB = 'THUMB',
+  LOADING = 'LOADING',
+  MINAZUKI = 'MINAZUKI',
+}
+
+interface A {
+  type: T;
+  payload: string;
+}
