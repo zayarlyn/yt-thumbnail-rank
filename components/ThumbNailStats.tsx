@@ -3,20 +3,14 @@ import {
   Box,
   Flex,
   Text,
-  StatGroup,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatUpArrow,
-  StatDownArrow,
   ChakraProps,
   Link as ChakraLink,
 } from '@chakra-ui/react';
-import { ViewIcon, StarIcon } from '@chakra-ui/icons';
 import { ThumbNail } from '../lib/firebaseUtils';
 import Thumbnail from './Thumbnail';
 import useUserData from '../hooks/useUserData';
 import Link from 'next/link';
+import StatsSection from './StatsSection';
 
 interface Props extends ThumbNail {
   idx: number;
@@ -24,8 +18,6 @@ interface Props extends ThumbNail {
 }
 
 const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx, isProfile }) => {
-  // if (!seen || !pt) return null;
-  const rating = seen && pt ? (pt * 100) / seen : 0;
   const publicUser = by ? useUserData({ uid: by }) : null;
   const d = new Date(at);
 
@@ -48,32 +40,8 @@ const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx, isPro
         </Box>
       </Box>
       <Flex flexDir='column' justifyContent='space-between' pl={{ md: 2 }} w={{ md: '15rem' }}>
-        <StatGroup
-          pt={['4vw', 5, 2]}
-          display={['flex', 'flex', 'grid']}
-          gridTemplateColumns='1fr 1fr'
-          columnGap={12}
-          rowGap={{ lg: 3 }}
-        >
-          <Stat>
-            <StatLabel>
-              Seen <ViewIcon />
-            </StatLabel>
-            <StatNumber>{seen}</StatNumber>
-          </Stat>
-          <Stat mb={4}>
-            <StatLabel>
-              clicked <StarIcon mb={0.8} />
-            </StatLabel>
-            <StatNumber>{pt}</StatNumber>
-          </Stat>
-          <Stat>
-            <StatLabel>Rating {rating >= 50 ? <StatUpArrow /> : <StatDownArrow />}</StatLabel>
-            <StatNumber>{rating.toFixed(2)}%</StatNumber>
-          </Stat>
-        </StatGroup>
+        <StatsSection seen={seen} pt={pt}/>
         <Box
-          // mt={[2, 4, 6, 16]}
           display='flex'
           flexWrap='wrap'
           columnGap={6}

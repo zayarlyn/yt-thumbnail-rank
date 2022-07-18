@@ -1,4 +1,4 @@
-import { signOut, getAuth, updateProfile, User } from 'firebase/auth';
+import { signOut, getAuth, } from 'firebase/auth';
 import {
   collection,
   addDoc,
@@ -158,8 +158,8 @@ export interface ThumbNail {
   at: number;
   yt_link: string;
   by?: string;
-  pt?: number;
-  seen?: number;
+  pt: number;
+  seen: number;
 }
 
 export enum TFType {

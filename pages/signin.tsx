@@ -11,6 +11,8 @@ import {
   Text,
   Heading,
   useToast,
+  Spinner,
+  Flex,
 } from '@chakra-ui/react';
 import type { UseToastOptions } from '@chakra-ui/react';
 import type { User } from 'firebase/auth';
@@ -34,6 +36,7 @@ interface S {
   email: string;
   isSent: boolean;
   loading: boolean;
+  authenticating: boolean;
   err: string;
 }
 
@@ -41,6 +44,7 @@ enum T {
   EMAIL = 'EMAIL',
   SEND = 'SEND',
   LOADING = 'LOADING',
+  AUTH = 'AUTH',
   ERROR = 'ERROR',
 }
 
@@ -59,16 +63,19 @@ const formReducer = (state: S, action: A) => {
       return { ...state, loading: !state.loading };
     case 'ERROR':
       return { ...state, err: action.value };
+    case 'AUTH':
+      return { ...state, authenticating: !state.authenticating };
     default:
       return state;
   }
 };
 
 const signin = () => {
-  const [{ email, isSent, loading, err }, dispatch] = useReducer(formReducer, {
+  const [{ email, isSent, loading, err, authenticating }, dispatch] = useReducer(formReducer, {
     email: '',
     isSent: false,
     loading: false,
+    authenticating: false,
     err: '',
   });
 
@@ -80,13 +87,15 @@ const signin = () => {
     (async () => {
       const LINKED_EMAIL = window.localStorage.getItem('emailForSignIn') || '';
       const EMAIL_LINK = window.location.href;
-      if (!LINKED_EMAIL || !await isSignInLink(EMAIL_LINK)) return;
+      if (!LINKED_EMAIL || !(await isSignInLink(EMAIL_LINK))) return;
+      dispatch({ type: T.AUTH, value: '' });
       const { user } = await signInWithLink(LINKED_EMAIL, EMAIL_LINK);
       const isNew = isNewUser(user.metadata as MetaData);
       await Promise.all([
         handleApiLogin(user),
         isNew ? updatePublicUser({ email: user.email as string }) : [],
       ]);
+      dispatch({ type: T.AUTH, value: '' });
       toast(toastOptions);
       router.push('/');
     })();
@@ -101,7 +110,7 @@ const signin = () => {
       dispatch({ type: T.LOADING, value: '' });
       dispatch({ type: T.SEND, value: '' });
     } catch (err) {
-      dispatch( {type: T.ERROR, value: (err as Error).message})
+      dispatch({ type: T.ERROR, value: (err as Error).message });
     }
   };
 
@@ -119,7 +128,12 @@ const signin = () => {
       justifyContent='center'
       h='calc(100vh - 60px)'
     >
-      {isSent ? (
+      {authenticating ? (
+        <Flex mb={20} flexDir='column' alignItems='center'>
+          <Text mb={2}>authenticating</Text>
+          <Spinner />
+        </Flex>
+      ) : isSent ? (
         <Box>
           <Text>
             A sign in link is sent to{' '}
