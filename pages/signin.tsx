@@ -85,19 +85,19 @@ const signin = () => {
 
   useEffect(() => {
     (async () => {
-      const LINKED_EMAIL = window.localStorage.getItem('emailForSignIn') || '';
-      const EMAIL_LINK = window.location.href;
-      if (!LINKED_EMAIL || !(await isSignInLink(EMAIL_LINK))) return;
-      dispatch({ type: T.AUTH, value: '' });
-      const { user } = await signInWithLink(LINKED_EMAIL, EMAIL_LINK);
-      const isNew = isNewUser(user.metadata as MetaData);
-      await Promise.all([
-        handleApiLogin(user),
-        isNew ? updatePublicUser({ email: user.email as string }) : [],
-      ]);
-      dispatch({ type: T.AUTH, value: '' });
-      toast(toastOptions);
-      router.push('/');
+      // const LINKED_EMAIL = window.localStorage.getItem('emailForSignIn') || '';
+      // const EMAIL_LINK = window.location.href;
+      // if (!LINKED_EMAIL || !(await isSignInLink(EMAIL_LINK))) return;
+      // dispatch({ type: T.AUTH, value: '' });
+      // const { user } = await signInWithLink(LINKED_EMAIL, EMAIL_LINK);
+      // const isNew = isNewUser(user.metadata as MetaData);
+      // await Promise.all([
+      //   handleApiLogin(user),
+      //   isNew ? updatePublicUser({ email: user.email as string }) : [],
+      // ]);
+      // dispatch({ type: T.AUTH, value: '' });
+      // toast(toastOptions);
+      // router.push('/');
     })();
   }, []);
 
