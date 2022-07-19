@@ -15,22 +15,8 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import type { UseToastOptions } from '@chakra-ui/react';
-import type { User } from 'firebase/auth';
 import { useAuthStore, AuthStoreType } from '../store/auth';
-import {
-  isNewUser,
-  isSignInLink,
-  MetaData,
-  sendSignInLink,
-  signInWithLink,
-  updatePublicUser,
-} from '../lib/firebaseUtils';
-
-const handleApiLogin = async (user: User) => {
-  const headers = { 'Content-Type': 'application/json' };
-  const body = JSON.stringify({ user });
-  return await fetch('/api/login', { method: 'POST', headers, body });
-};
+import { handleLogin, isSignInLink, sendSignInLink, signInWithLink } from '../lib/firebaseUtils';
 
 interface S {
   email: string;
@@ -55,29 +41,34 @@ interface A {
 
 const formReducer = (state: S, action: A) => {
   switch (action.type) {
-    case 'EMAIL':
+    case T.EMAIL:
       return { ...state, email: action.value };
-    case 'SEND':
-      return { ...state, isSent: !state.isSent };
-    case 'LOADING':
+    case T.SEND:
+      return { ...state, isSent: true };
+    case T.LOADING:
       return { ...state, loading: !state.loading };
-    case 'ERROR':
+    case T.ERROR:
       return { ...state, err: action.value };
-    case 'AUTH':
+    case T.AUTH:
       return { ...state, authenticating: !state.authenticating };
     default:
       return state;
   }
 };
 
-const signin = () => {
-  const [{ email, isSent, loading, err, authenticating }, dispatch] = useReducer(formReducer, {
-    email: '',
-    isSent: false,
-    loading: false,
-    authenticating: false,
-    err: '',
-  });
+const defaultValue = {
+  email: '',
+  isSent: false,
+  loading: false,
+  authenticating: false,
+  err: '',
+};
+
+export default function signin() {
+  const [{ email, isSent, loading, err, authenticating }, dispatch] = useReducer(
+    formReducer,
+    defaultValue
+  );
 
   const { user: isAuthenticated } = useAuthStore() as AuthStoreType;
   const router = useRouter();
@@ -85,19 +76,12 @@ const signin = () => {
 
   useEffect(() => {
     (async () => {
-      // const LINKED_EMAIL = window.localStorage.getItem('emailForSignIn') || '';
-      // const EMAIL_LINK = window.location.href;
-      // if (!LINKED_EMAIL || !(await isSignInLink(EMAIL_LINK))) return;
-      // dispatch({ type: T.AUTH, value: '' });
-      // const { user } = await signInWithLink(LINKED_EMAIL, EMAIL_LINK);
-      // const isNew = isNewUser(user.metadata as MetaData);
-      // await Promise.all([
-      //   handleApiLogin(user),
-      //   isNew ? updatePublicUser({ email: user.email as string }) : [],
-      // ]);
-      // dispatch({ type: T.AUTH, value: '' });
-      // toast(toastOptions);
-      // router.push('/');
+      const LINKED_EMAIL = window.localStorage.getItem('emailForSignIn');
+      const EMAIL_LINK = window.location.href;
+      if (!LINKED_EMAIL || !(await isSignInLink())) return;
+      dispatch({ type: T.AUTH, value: '' });
+      const { user } = await signInWithLink(LINKED_EMAIL, EMAIL_LINK);
+      await handleLogin(user);
     })();
   }, []);
 
@@ -115,8 +99,8 @@ const signin = () => {
   };
 
   if (isAuthenticated) {
+    toast(toastOptions);
     router.push('/');
-    return null;
   }
 
   return (
@@ -180,9 +164,7 @@ const signin = () => {
       )}
     </Box>
   );
-};
-
-export default signin;
+}
 
 const toastOptions: UseToastOptions = {
   description: 'successfully logged in',

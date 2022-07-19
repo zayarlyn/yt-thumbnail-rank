@@ -1,4 +1,4 @@
-import { signOut, getAuth } from 'firebase/auth';
+import { signOut, getAuth, User } from 'firebase/auth';
 import {
   collection,
   addDoc,
@@ -20,7 +20,10 @@ import { sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } fro
 import { app, db } from '../firebaseconfig';
 
 export const actionCodeSettings = {
-  url: 'https://yt-thumbnail-rank.vercel.app/signin',
+  url:
+    process.env.NODE_ENV === 'production'
+      ? 'https://yt-thumbnail-rank.vercel.app/signin'
+      : 'http://localhost:3000/signin',
   handleCodeInApp: true,
 };
 
@@ -36,9 +39,19 @@ export const sendSignInLink = async (email: string) => {
   return sendSignInLinkToEmail(getAuth(app), email, actionCodeSettings);
 };
 
-export const isSignInLink = async (link: string) => {
-  return isSignInWithEmailLink(getAuth(app), link);
+export const isSignInLink = async () => {
+  return isSignInWithEmailLink(getAuth(app), window.location.href);
 };
+
+export async function handleLogin(user: User) {
+  const headers = { 'Content-Type': 'application/json' };
+  const body = JSON.stringify({ user });
+  const loginPromise = new Promise(() => fetch('/api/login', { method: 'POST', headers, body }));
+  const { createdAt, lastLoginAt } = user.metadata as MetaData;
+  const newUserPromise =
+    createdAt === lastLoginAt ? updatePublicUser({ email: user.email as string }) : [];
+  return Promise.all([loginPromise, newUserPromise]);
+}
 
 export const signOutUser = async () => {
   return await signOut(getAuth(app));
@@ -84,10 +97,6 @@ export const parseLinkWithFallback = (url: string, isErr = false) => {
   // ? `https://img.youtube.com/vi/${vId}/hqdefault.jpg`
   // : `https://img.youtube.com/vi/${vId}/maxresdefault.jpg`;
   return `https://img.youtube.com/vi/${vId}/hqdefault.jpg`;
-};
-
-export const isNewUser = ({ createdAt, lastLoginAt }: MetaData) => {
-  // return createdAt, lastLoginAt;
 };
 
 export const getPublicUser = async (uid: string) => {
@@ -154,7 +163,7 @@ export const FisherYatesRandomize = (thumbnails: ThumbNail[]) => {
   return thumbnails;
 };
 
-export function shuffleThumbs (thumbnails: ThumbNail[]) {
+export function shuffleThumbs(thumbnails: ThumbNail[]) {
   const len = thumbnails.length;
   const shuffle = [...FisherYatesRandomize(thumbnails), ...FisherYatesRandomize(thumbnails)]; // shuffle and merge
   if (shuffle[len].id === shuffle[len - 1].id) {

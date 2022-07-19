@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { NextPage } from 'next';
 import { Box, Flex, Heading, Link, Text } from '@chakra-ui/react';
 import Head from 'next/head';
