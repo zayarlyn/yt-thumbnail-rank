@@ -1,13 +1,28 @@
-import { useState } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import type { NextPage } from 'next';
 import { Box, Flex, Heading, Link, Text } from '@chakra-ui/react';
 import Head from 'next/head';
-import { fetchThumbnails, ThumbNail, TFType, FisherYatesRandomize } from '../lib/firebaseUtils';
+import {
+  fetchThumbnails,
+  ThumbNail,
+  TFType,
+  shuffleThumbs,
+} from '../lib/firebaseUtils';
 import ThumbWithDescr from '../components/ThumbWithDescr';
 
-const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
+const Home: NextPage<{ raw_thumbs: ThumbNail[] }> = ({ raw_thumbs }) => {
+  const thumbnails = useMemo(() => shuffleThumbs(raw_thumbs), []);
   const [index, setIndex] = useState(0);
-  console.log(thumbnails);
+  
+  // the following is only for hydration, wtf
+  const [client, setClient] = useState(false); 
+  useEffect(() => {
+    setClient(true);
+  }, []);
+
+  if (!client) {
+    return null;
+  }//
 
   const handleThumbClick = () => {
     setIndex((prev) => prev + 2);
@@ -38,7 +53,7 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
                   onClick={handleThumbClick}
                   thumb_id={id}
                   yt_link={yt_link}
-                  descr={descr ?? ''}
+                  descr={descr}
                   key={i}
                 />
               );
@@ -68,12 +83,6 @@ const Home: NextPage<{ thumbnails: ThumbNail[] }> = ({ thumbnails }) => {
 export default Home;
 
 export async function getServerSideProps() {
-  const data = await fetchThumbnails({ type: TFType.NORM });
-  const len = data.length;
-  const thumbnails = [...FisherYatesRandomize(data), ...FisherYatesRandomize(data)]; // shuffle and merge
-  if (thumbnails[len].id === thumbnails[len - 1].id) {
-    console.log('switched');
-    thumbnails[len] = thumbnails[2]; // handle the case where the end of the first array is equal to the start of the second array
-  }
-  return { props: { thumbnails: FisherYatesRandomize(thumbnails) } };
+  const raw_thumbs = await fetchThumbnails({ type: TFType.NORM });
+  return { props: { raw_thumbs } };
 }

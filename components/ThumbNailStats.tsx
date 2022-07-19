@@ -31,7 +31,7 @@ const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx, isPro
       p={3}
     >
       <Box position='relative' flexGrow={1}>
-        <Thumbnail v_link={yt_link} />
+        <Thumbnail yt_link={yt_link} />
         <Box {...(badgeProps as ChakraProps)}>
           <span>{idx + 1}</span>
         </Box>

@@ -5,11 +5,10 @@ import Thumbnail from './Thumbnail';
 interface Props {
   thumb_id: string;
   yt_link: string;
-  descr: string;
+  descr?: string;
   onClick: () => void;
 }
-const ThumbWithDescr = (props: Props) => {
-  const { thumb_id, yt_link, descr, onClick } = props;
+const ThumbWithDescr = ({ thumb_id, yt_link, descr, onClick }: Props) => {
   const handleClick = async () => {
     onClick();
     // record click count
@@ -28,9 +27,11 @@ const ThumbWithDescr = (props: Props) => {
       whileTap={{ scale: 0.975 }}
     >
       <Thumbnail yt_link={yt_link} />
-      <Text mt={3} fontSize='lg' noOfLines={2}>
-        {descr}
-      </Text>
+      {descr ? (
+        <Text mt={3} fontSize='lg' noOfLines={2}>
+          {descr}
+        </Text>
+      ) : null}
     </Box>
   );
 };

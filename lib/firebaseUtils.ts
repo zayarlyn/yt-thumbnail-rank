@@ -154,6 +154,15 @@ export const FisherYatesRandomize = (thumbnails: ThumbNail[]) => {
   return thumbnails;
 };
 
+export function shuffleThumbs (thumbnails: ThumbNail[]) {
+  const len = thumbnails.length;
+  const shuffle = [...FisherYatesRandomize(thumbnails), ...FisherYatesRandomize(thumbnails)]; // shuffle and merge
+  if (shuffle[len].id === shuffle[len - 1].id) {
+    shuffle[len] = shuffle[2]; // handle the case where the end of the first array is equal to the start of the second array
+  }
+  return shuffle;
+}
+
 export interface ThumbNail {
   id: string;
   at: number;
