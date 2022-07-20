@@ -1,8 +1,7 @@
-import { Box, Flex, Grid, Tab, TabList, Tabs } from '@chakra-ui/react';
-import { fetchThumbnails, TFType, ThumbNail } from '../../lib/firebaseUtils';
 import { NextPage } from 'next';
-import ThumbNailStats from '../../components/ThumbNailStats';
 import { useRouter } from 'next/router';
+import { Box, Flex, Grid, Tab, TabList, Tabs } from '@chakra-ui/react';
+import { fetchThumbnails, ThumbNail } from '../../lib/firestoreUtils';
 import ThumbnailList from '../../components/ThumbnailList';
 
 interface SSProps {
@@ -57,7 +56,7 @@ export async function getServerSideProps({ query }: { query: { count: number } }
   const LIMIT = query.count;
   if (LIMIT > 15 || isNaN(LIMIT))
     return { redirect: { destination: '/ranking/5', permanent: false } };
-  const rankings = await fetchThumbnails({ type: TFType.RANK, LIMIT });
+  const rankings = await fetchThumbnails({ type: 'RANK', LIMIT });
 
   return { props: { rankings, selected: (LIMIT / 5) | 0 } };
 }

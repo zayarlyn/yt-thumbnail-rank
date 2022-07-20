@@ -6,7 +6,7 @@ import { parseLinkWithFallback } from '../lib/firebaseUtils';
 
 interface Props {
   yt_link: string;
-  isLoaded: React.Dispatch<React.SetStateAction<boolean>>
+  isLoaded: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Thumbnail: React.FC<Props> = ({ yt_link, isLoaded }) => {
@@ -26,7 +26,7 @@ const Thumbnail: React.FC<Props> = ({ yt_link, isLoaded }) => {
       {src ? (
         <Image
           priority
-          onLoadingComplete={() => isLoaded(true)}
+          onLoadingComplete={isLoaded ? () => isLoaded(true) : undefined}
           src={src}
           layout='fill'
           objectFit='cover'

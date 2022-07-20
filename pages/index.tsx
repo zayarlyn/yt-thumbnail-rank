@@ -1,26 +1,20 @@
-import { useState, useMemo, useEffect } from 'react';
-import type { NextPage } from 'next';
-import { Box, Flex, Heading, Link, Text } from '@chakra-ui/react';
 import Head from 'next/head';
+import type { InferGetServerSidePropsType } from 'next';
+import { useState, useMemo, useEffect } from 'react';
+import { Box, Flex, Heading, Link, Text } from '@chakra-ui/react';
 import { AuthStoreType, useAuthStore } from '../store/auth';
-import {
-  fetchThumbnails,
-  ThumbNail,
-  TFType,
-  shuffleThumbs,
-  incrementThumb,
-  updatePrivateUser,
-} from '../lib/firebaseUtils';
+import { shuffleThumbs } from '../lib/firebaseUtils';
+import { updateViewcountOfThumbsAndUsers, fetchThumbnails } from '../lib/firestoreUtils';
 import ThumbWithDescr from '../components/ThumbWithDescr';
 
-const Home: NextPage<{ raw_thumbs: ThumbNail[] }> = ({ raw_thumbs }) => {
+const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { user } = useAuthStore() as AuthStoreType;
   const thumbnails = useMemo(() => shuffleThumbs(raw_thumbs), []);
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
-    if (idx === thumbnails.length) return;
-    updateThumbsAndUser(thumbnails[idx].id, thumbnails[idx + 1].id);
+    if (user === undefined || idx === thumbnails.length) return;
+    updateViewcountOfThumbsAndUsers({ user, id1: thumbnails[idx].id, id2: thumbnails[idx + 1].id });
   }, [idx, user]);
 
   // the following is only for hydration, wtf
@@ -89,14 +83,6 @@ const Home: NextPage<{ raw_thumbs: ThumbNail[] }> = ({ raw_thumbs }) => {
 export default Home;
 
 export async function getServerSideProps() {
-  const raw_thumbs = await fetchThumbnails({ type: TFType.NORM });
+  const raw_thumbs = await fetchThumbnails({ type: 'NORM' });
   return { props: { raw_thumbs } };
 }
-
-const updateThumbsAndUser = async (id1: string, id2: string) => {
-  return await Promise.all([
-    // incrementThumb({ id: id1, clicked: false }),
-    // incrementThumb({ id: id2, clicked: false }),
-    updatePrivateUser({ clicked: false }),
-  ]);
-};

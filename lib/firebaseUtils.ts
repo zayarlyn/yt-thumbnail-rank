@@ -3,14 +3,9 @@ import {
   collection,
   addDoc,
   serverTimestamp,
-  getDocs,
   doc,
   setDoc,
-  increment,
-  query,
-  orderBy,
   getDoc,
-  limit,
   arrayUnion,
   DocumentSnapshot,
   QueryDocumentSnapshot,
@@ -26,8 +21,6 @@ export const actionCodeSettings = {
       : 'http://localhost:3000/signin',
   handleCodeInApp: true,
 };
-
-const getAuthUser = () => getAuth(app).currentUser;
 
 export const parseVideoId = (url: string) => {
   return url.match(/(?<=watch\?v=)[\w\-]*/)?.[0] || url.match(/(?<=youtu\.be\/)[\w\-]*/)?.[0];
@@ -71,28 +64,9 @@ export const uploadThumbnail = async ({ yt_link, descr }: { yt_link: string; des
   });
 };
 
-export const fetchThumbnails = async ({ type, LIMIT }: FetchThumbnails) => {
-  const q =
-    type === 'RANK'
-      ? query(
-          collection(db, 'thumbnails'),
-          orderBy('pt', 'desc'),
-          orderBy('seen', 'desc'),
-          limit(LIMIT ?? 5)
-        )
-      : query(collection(db, 'thumbnails'), orderBy('at', 'desc'));
-  const raw = await getDocs(q);
-  return transformToThumbNails(raw.docs);
-};
 
-export const incrementThumb = async ({ id, clicked }: { id: string; clicked: boolean }) => {
-  return setDoc(
-    doc(db, 'thumbnails', id),
-    // {seen: 0},
-    { seen: increment(clicked ? 0 : 1), pt: increment(clicked ? 1 : 0) },
-    { merge: true }
-  );
-};
+
+
 // https://www.youtube.com/watch?v=nROvY9uiYYk
 export const parseLinkWithFallback = (url: string, isErr = false) => {
   const vId = parseVideoId(url);
@@ -121,16 +95,7 @@ export const updatePublicUser = async (public_data: Public_data) => {
   return user ? setDoc(doc(db, 'users', user.uid), { ...public_data }, { merge: true }) : null;
 };
 
-export const updatePrivateUser = async ({ clicked }: Private_data) => {
-  const user = getAuthUser();
-  return user
-    ? setDoc(
-        doc(db, 'users', user.uid, 'private', 'profile'),
-        { seen: increment(clicked ? 0 : 2), clicked: increment(clicked ? 1 : 0) },
-        { merge: true }
-      )
-    : null;
-};
+
 
 export const AddToUserThumbnails = (thumbId: string) => {
   const user = getAuth(app).currentUser;
@@ -182,15 +147,9 @@ export interface ThumbNail {
   seen: number;
 }
 
-export enum TFType {
-  RANK = 'RANK',
-  NORM = 'NORM',
-}
 
-export interface FetchThumbnails {
-  type: TFType;
-  LIMIT?: number;
-}
+
+
 
 export interface Public_data {
   uid?: string;
