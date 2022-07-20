@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Box, Flex, Heading, Link, Text } from '@chakra-ui/react';
 import { AuthStoreType, useAuthStore } from '../store/auth';
 import { shuffleThumbs } from '../lib/firebaseUtils';
-import { updateViewcountOfThumbsAndUsers, fetchThumbnails } from '../lib/firestoreUtils';
+import { updateViewcountOfThumbsAndUser, fetchThumbnails } from '../lib/firestoreUtils';
 import ThumbWithDescr from '../components/ThumbWithDescr';
 
 const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
@@ -14,13 +14,13 @@ const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSidePr
 
   useEffect(() => {
     if (user === undefined || idx === thumbnails.length) return;
-    updateViewcountOfThumbsAndUsers({ user, id1: thumbnails[idx].id, id2: thumbnails[idx + 1].id });
+    const getId = (n: number) => thumbnails[n].id;
+    updateViewcountOfThumbsAndUser({ thumb1_id: getId(idx), thumb2_id: getId(idx + 1) });
   }, [idx, user]);
 
   // the following is only for hydration, wtf
   const [client, setClient] = useState(false);
   useEffect(() => setClient(true), []);
-
   if (!client) return null;
   //
 

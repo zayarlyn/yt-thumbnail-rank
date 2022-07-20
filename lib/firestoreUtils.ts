@@ -8,16 +8,23 @@ import {
   orderBy,
   limit,
 } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 import type { QueryDocumentSnapshot, DocumentSnapshot, DocumentData } from 'firebase/firestore';
-import type { User } from 'firebase/auth';
-import { db } from '../firebaseconfig';
+import { db, app } from '../firebaseconfig';
 
 // main functions
-export async function updateViewcountOfThumbsAndUsers({ user, id1, id2 }: UVOTAU) {
+export async function updateViewcountOfThumbsAndUser({ thumb1_id, thumb2_id }: UVOTAU) {
   return await Promise.all([
-    // incrementThumb({ id: id1, clicked: false }), // thumbanail 1
-    // incrementThumb({ id: id2, clicked: false }), // thumbnail 2
-    // updatePrivateUser({ user, clicked: false }), // logged user
+    incrementThumb({ id: thumb1_id, clicked: false }), // thumbanail 1
+    incrementThumb({ id: thumb2_id, clicked: false }), // thumbnail 2
+    updatePrivateUser({ clicked: false }), // logged user
+  ]);
+}
+
+export async function updateClickcountOfThumbsAndUser({ thumb_id }: { thumb_id: string }) {
+  return await Promise.all([
+    incrementThumb({ id: thumb_id, clicked: true }), // clicked thumbnail
+    updatePrivateUser({ clicked: true }), // logged user
   ]);
 }
 
@@ -44,7 +51,8 @@ const incrementThumb = async ({ id, clicked }: { id: string; clicked: boolean })
   );
 };
 
-const updatePrivateUser = async ({ user, clicked }: UPU) => {
+const updatePrivateUser = async ({ clicked }: { clicked: boolean }) => {
+  const user = getAuth(app).currentUser;
   if (!user) return null; // cancal update if the user isn't logged in
   return setDoc(
     doc(db, 'users', user.uid, 'private', 'profile'),
@@ -68,21 +76,16 @@ const querytoFetchThumbs = ({ type, LIMIT }: FT) => {
 type FT = {
   type: string;
   LIMIT?: number;
-}
+};
 
 type TTT = QueryDocumentSnapshot<DocumentData>[] | DocumentSnapshot<DocumentData>[];
 
 type UVOTAU = {
-  user: User | null;
-  id1: string;
-  id2: string;
+  thumb1_id: string;
+  thumb2_id: string;
 };
 
 // helper types
-type UPU = {
-  user: User | null;
-  clicked: boolean;
-};
 
 export type ThumbNail = {
   id: string;
@@ -92,4 +95,4 @@ export type ThumbNail = {
   by?: string;
   pt: number;
   seen: number;
-}
+};

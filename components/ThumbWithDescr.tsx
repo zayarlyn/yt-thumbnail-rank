@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import Thumbnail from './Thumbnail';
+import { updateClickcountOfThumbsAndUser } from '../lib/firestoreUtils';
 
 interface Props {
   thumb_id: string;
@@ -17,7 +18,7 @@ const ThumbWithDescr = ({ thumb_id, yt_link, descr, onClick }: Props) => {
   const handleClick = async () => {
     if (!imgIsLoaded) return;
     onClick();
-    // await Promise.all([incrementThumb(id, true), updatePrivateUser({ clicked: true })]);
+    updateClickcountOfThumbsAndUser({thumb_id});
   };
 
   return (
