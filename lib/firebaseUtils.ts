@@ -27,6 +27,8 @@ export const actionCodeSettings = {
   handleCodeInApp: true,
 };
 
+const getAuthUser = () => getAuth(app).currentUser;
+
 export const parseVideoId = (url: string) => {
   return url.match(/(?<=watch\?v=)[\w\-]*/)?.[0] || url.match(/(?<=youtu\.be\/)[\w\-]*/)?.[0];
 };
@@ -83,19 +85,17 @@ export const fetchThumbnails = async ({ type, LIMIT }: FetchThumbnails) => {
   return transformToThumbNails(raw.docs);
 };
 
-export const incrementThumb = async (id: string, incre_pt = false) => {
+export const incrementThumb = async ({ id, clicked }: { id: string; clicked: boolean }) => {
   return setDoc(
     doc(db, 'thumbnails', id),
-    { seen: increment(1), pt: increment(incre_pt ? 1 : 0) },
+    // {seen: 0},
+    { seen: increment(clicked ? 0 : 1), pt: increment(clicked ? 1 : 0) },
     { merge: true }
   );
 };
 // https://www.youtube.com/watch?v=nROvY9uiYYk
 export const parseLinkWithFallback = (url: string, isErr = false) => {
   const vId = parseVideoId(url);
-  // return isErr
-  // ? `https://img.youtube.com/vi/${vId}/hqdefault.jpg`
-  // : `https://img.youtube.com/vi/${vId}/maxresdefault.jpg`;
   return `https://img.youtube.com/vi/${vId}/hqdefault.jpg`;
 };
 
@@ -121,12 +121,12 @@ export const updatePublicUser = async (public_data: Public_data) => {
   return user ? setDoc(doc(db, 'users', user.uid), { ...public_data }, { merge: true }) : null;
 };
 
-export const updatePrivateUser = async ({ seen, clicked }: Private_data) => {
-  const user = getAuth(app).currentUser;
+export const updatePrivateUser = async ({ clicked }: Private_data) => {
+  const user = getAuthUser();
   return user
     ? setDoc(
-        doc(db, 'users', user?.uid, 'private', 'profile'),
-        { seen: increment(seen ? 1 : 0), clicked: increment(clicked ? 1 : 0) },
+        doc(db, 'users', user.uid, 'private', 'profile'),
+        { seen: increment(clicked ? 0 : 2), clicked: increment(clicked ? 1 : 0) },
         { merge: true }
       )
     : null;

@@ -6,50 +6,33 @@ import { parseLinkWithFallback } from '../lib/firebaseUtils';
 
 interface Props {
   yt_link: string;
+  isLoaded: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Thumbnail: React.FC<Props> = ({ yt_link }) => {
+const Thumbnail: React.FC<Props> = ({ yt_link, isLoaded }) => {
   const [src, setSrc] = useState(parseLinkWithFallback(yt_link));
 
-  useEffect(() => {
-    setSrc(parseLinkWithFallback(yt_link));
-    // record view count
-    // if (!id || !active) return;
-    // Promise.all([updatePrivateUser({ seen: true }), incrementThumb(id)]);
-  }, [yt_link]);
-
-
-  // const handleError = () => {
-  //   setSrc(parseLinkWithFallback(v_link, true));
-  // };
+  useEffect(() => setSrc(parseLinkWithFallback(yt_link)), [yt_link]);
 
   return (
     <AspectRatio
       as={motion.div}
       ratio={16 / 9}
       w='full'
-      // cursor={active ? 'pointer' : ''}
       border='1px solid'
       position='relative'
       transitionDuration='.3'
-      // initial={{ scale: 0.9 }}
-      // animate={{ scale: 1, transition: { duration: 0.3 } }}
-      // whileHover={{ scale: active ? 1.04 : 1 }}
-      // whileTap={{ scale: active ? 0.95 : 1 }}
     >
       {src ? (
         <Image
           priority
-          // onClick={handleClick}
-          // onError={handleError}
+          onLoadingComplete={() => isLoaded(true)}
           src={src}
           layout='fill'
           objectFit='cover'
           draggable={false}
         />
-      ) : (
-        <></>
-      )}
+      ) : null}
     </AspectRatio>
   );
 };
