@@ -18,7 +18,7 @@ import {
   UseToastOptions,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { AddToUserThumbnails, uploadThumbnail } from '../lib/firebaseUtils';
+import { uploadThumbnail, recordUploadedThumbInUser } from '../lib/firestoreUtils';
 import Thumbnail from './Thumbnail';
 
 const defaultValue: S = {
@@ -30,7 +30,6 @@ const defaultValue: S = {
 
 const reducer = (state: S, action: A): S => {
   const { type, payload } = action;
-  console.log('payload', payload);
   switch (type) {
     case 'URL':
       return { ...state, url: payload };
@@ -55,7 +54,7 @@ const RightDrawer = () => {
   const handleUpload = async () => {
     dispatch({ type: T.LOADING, payload: '' });
     const { id } = await uploadThumbnail({ yt_link: url, descr: descr.trim() });
-    await AddToUserThumbnails(id);
+    await recordUploadedThumbInUser(id);
     toast(toastConfig);
     dispatch({ type: T.MINAZUKI, payload: '' });
     onClose();

@@ -3,7 +3,6 @@ import useThumbnailsFromIds from '../hooks/useThumbnailsFromIds';
 import ThumbnailList from './ThumbnailList';
 interface Props {
   thumbIds?: string[];
-  isPrivate?: boolean;
 }
 const UserThumbnails: React.FC<Props> = ({ thumbIds }) => {
   const userThumbs = useThumbnailsFromIds(thumbIds);

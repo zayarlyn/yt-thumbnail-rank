@@ -3,13 +3,12 @@ import type { InferGetServerSidePropsType } from 'next';
 import { useState, useMemo, useEffect } from 'react';
 import { Box, Flex, Heading, Link, Text } from '@chakra-ui/react';
 import { AuthStoreType, useAuthStore } from '../store/auth';
-import { shuffleThumbs } from '../lib/firebaseUtils';
-import { updateViewcountOfThumbsAndUser, fetchThumbnails } from '../lib/firestoreUtils';
+import { fetchThumbnails, shuffleThumbnails, updateViewcountOfThumbsAndUser } from '../lib/firestoreUtils';
 import ThumbWithDescr from '../components/ThumbWithDescr';
 
 const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { user } = useAuthStore() as AuthStoreType;
-  const thumbnails = useMemo(() => shuffleThumbs(raw_thumbs), []);
+  const thumbnails = useMemo(() => shuffleThumbnails(raw_thumbs), []);
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {

@@ -1,5 +1,7 @@
 import {
   setDoc,
+  addDoc,
+  getDoc,
   getDocs,
   doc,
   increment,
@@ -7,6 +9,8 @@ import {
   collection,
   orderBy,
   limit,
+  serverTimestamp,
+  arrayUnion,
 } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import type { QueryDocumentSnapshot, DocumentSnapshot, DocumentData } from 'firebase/firestore';
@@ -17,20 +21,53 @@ export async function updateViewcountOfThumbsAndUser({ thumb1_id, thumb2_id }: U
   return await Promise.all([
     incrementThumb({ id: thumb1_id, clicked: false }), // thumbanail 1
     incrementThumb({ id: thumb2_id, clicked: false }), // thumbnail 2
-    updatePrivateUser({ clicked: false }), // logged user
+    incrementUser({ clicked: false }), // logged user
   ]);
 }
 
 export async function updateClickcountOfThumbsAndUser({ thumb_id }: { thumb_id: string }) {
   return await Promise.all([
     incrementThumb({ id: thumb_id, clicked: true }), // clicked thumbnail
-    updatePrivateUser({ clicked: true }), // logged user
+    incrementUser({ clicked: true }), // logged user
   ]);
 }
 
 export async function fetchThumbnails(config: FT) {
   const raw = await getDocs(querytoFetchThumbs(config));
   return transformToThumbNails(raw.docs);
+}
+
+export async function uploadThumbnail(thumb_data: UT) {
+  return addDoc(collection(db, 'thumbnails'), thumbDataToUpload(thumb_data));
+}
+
+export async function recordUploadedThumbInUser(thumbId: string) {
+  const user = getUserAuth();
+  return user
+    ? setDoc(doc(db, 'users', user?.uid), { thumbnails: arrayUnion(thumbId) }, { merge: true })
+    : null;
+}
+
+export async function getThumbnailsFromIds(thumbIds: string[]) {
+  const raw = await Promise.all(thumbIds.map((id) => getDoc(doc(db, 'thumbnails', id))));
+  return transformToThumbNails(raw);
+}
+
+export function shuffleThumbnails(thumbnails: ThumbNail[]) {
+  const len = thumbnails.length;
+  const shuffle = [...FisherYatesRandomize(thumbnails), ...FisherYatesRandomize(thumbnails)]; // shuffle and merge
+  if (shuffle[len].id === shuffle[len - 1].id) {
+    shuffle[len] = shuffle[2]; // handle the case where the end of the first array is equal to the start of the second array
+  }
+  return shuffle;
+}
+
+export async function getUserDetails(uid: string) {
+  const [publicData, privateData] = await Promise.all([
+    await getPublicUser(uid),
+    await getPrivateUser(uid),
+  ]);
+  return { ...publicData, ...privateData } as UserDetails;
 }
 
 // helper functions
@@ -51,8 +88,8 @@ const incrementThumb = async ({ id, clicked }: { id: string; clicked: boolean })
   );
 };
 
-const updatePrivateUser = async ({ clicked }: { clicked: boolean }) => {
-  const user = getAuth(app).currentUser;
+const incrementUser = async ({ clicked }: { clicked: boolean }) => {
+  const user = getUserAuth();
   if (!user) return null; // cancal update if the user isn't logged in
   return setDoc(
     doc(db, 'users', user.uid, 'private', 'profile'),
@@ -72,6 +109,46 @@ const querytoFetchThumbs = ({ type, LIMIT }: FT) => {
     : query(collection(db, 'thumbnails'), orderBy('at', 'desc'));
 };
 
+const thumbDataToUpload = ({ yt_link, descr }: UT) => {
+  const user = getUserAuth();
+  return {
+    ...(user && { by: user.uid }),
+    ...(descr && { descr }),
+    at: serverTimestamp(),
+    yt_link,
+    seen: 0,
+    pt: 0,
+  };
+};
+
+const FisherYatesRandomize = (thumbnails: ThumbNail[]) => {
+  // Learn more https://www.geeksforgeeks.org/shuffle-a-given-array-using-fisher-yates-shuffle-algorithm/
+  for (let i = thumbnails.length - 1; i > 0; i--) {
+    const j = Math.round(Math.random() * i);
+    [thumbnails[i], thumbnails[j]] = [thumbnails[j], thumbnails[i]];
+  }
+  return thumbnails;
+};
+const getUserAuth = () => getAuth(app).currentUser;
+
+export const getPublicUser = async (uid: string) => {
+  const raw = await getDoc(doc(db, 'users', uid));
+  return { uid, ...raw.data() };
+};
+
+export const getPrivateUser = async (uid: string) => {
+  const raw = await getDoc(doc(db, 'users', uid, 'private', 'profile'));
+  return { ...raw.data() };
+};
+
+export const updatePublicUser = async (public_data: {[key: string]: string}) => {
+  return setDoc(doc(db, 'users', getUserAuth()!.uid), public_data, { merge: true });
+};
+
+export const updatePrivateUser = async (private_data: UPU) => {
+  return setDoc(doc(db, 'users', getUserAuth()!.uid, 'private', 'profile'), private_data, { merge: true });
+};
+
 // main types
 type FT = {
   type: string;
@@ -85,7 +162,12 @@ type UVOTAU = {
   thumb2_id: string;
 };
 
+type UT = { yt_link: string; descr?: string };
+
 // helper types
+type UPU = {
+  email?: string;
+};
 
 export type ThumbNail = {
   id: string;
@@ -96,3 +178,20 @@ export type ThumbNail = {
   pt: number;
   seen: number;
 };
+
+export interface Public_data {
+  uid: string;
+  username: string;
+  photoUrl?: string;
+  thumbnails?: string[];
+}
+
+export interface UserDetails {
+  uid: string;
+  username: string;
+  photoUrl?: string;
+  thumbnails?: string[];
+  email: string;
+  seen: boolean;
+  clicked: boolean;
+}

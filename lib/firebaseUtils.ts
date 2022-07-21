@@ -1,18 +1,7 @@
 import { signOut, getAuth, User } from 'firebase/auth';
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  doc,
-  setDoc,
-  getDoc,
-  arrayUnion,
-  DocumentSnapshot,
-  QueryDocumentSnapshot,
-  DocumentData,
-} from 'firebase/firestore';
 import { sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
 import { app, db } from '../firebaseconfig';
+import { updatePrivateUser } from './firestoreUtils';
 
 export const actionCodeSettings = {
   url:
@@ -44,7 +33,7 @@ export async function handleLogin(user: User) {
   const loginPromise = new Promise(() => fetch('/api/login', { method: 'POST', headers, body }));
   const { createdAt, lastLoginAt } = user.metadata as MetaData;
   const newUserPromise =
-    createdAt === lastLoginAt ? updatePublicUser({ email: user.email as string }) : [];
+    createdAt === lastLoginAt ? updatePrivateUser({ email: user.email as string }) : [];
   return Promise.all([loginPromise, newUserPromise]);
 }
 
@@ -52,120 +41,9 @@ export const signOutUser = async () => {
   return await signOut(getAuth(app));
 };
 
-export const uploadThumbnail = async ({ yt_link, descr }: { yt_link: string; descr?: string }) => {
-  const user = getAuth(app).currentUser;
-  return addDoc(collection(db, 'thumbnails'), {
-    ...(user && { by: user.uid }),
-    at: serverTimestamp(),
-    ...(descr && { descr }),
-    seen: 0,
-    pt: 0,
-    yt_link,
-  });
-};
-
-
-
-
-// https://www.youtube.com/watch?v=nROvY9uiYYk
 export const parseLinkWithFallback = (url: string, isErr = false) => {
-  const vId = parseVideoId(url);
-  return `https://img.youtube.com/vi/${vId}/hqdefault.jpg`;
+  return `https://img.youtube.com/vi/${parseVideoId(url)}/hqdefault.jpg`;
 };
-
-export const getPublicUser = async (uid: string) => {
-  const raw = await getDoc(doc(db, 'users', uid));
-  return { uid, ...raw.data() };
-};
-export const getPrivateUser = async (uid: string) => {
-  const raw = await getDoc(doc(db, 'users', uid, 'private', 'profile'));
-  return { ...raw.data() };
-};
-
-export const getUser = async (uid: string) => {
-  const [publicData, privateData] = await Promise.all([
-    await getPublicUser(uid),
-    await getPrivateUser(uid),
-  ]);
-  return { ...publicData, ...privateData };
-};
-
-export const updatePublicUser = async (public_data: Public_data) => {
-  const user = getAuth(app).currentUser;
-  return user ? setDoc(doc(db, 'users', user.uid), { ...public_data }, { merge: true }) : null;
-};
-
-
-
-export const AddToUserThumbnails = (thumbId: string) => {
-  const user = getAuth(app).currentUser;
-  return user
-    ? setDoc(doc(db, 'users', user?.uid), { thumbnails: arrayUnion(thumbId) }, { merge: true })
-    : null;
-};
-
-export const getThumbnailsFromIds = async (thumbnails: string[]) => {
-  const raw = await Promise.all(thumbnails.map((id) => getDoc(doc(db, 'thumbnails', id))));
-  return transformToThumbNails(raw);
-};
-
-const transformToThumbNails = (
-  docs: QueryDocumentSnapshot<DocumentData>[] | DocumentSnapshot<DocumentData>[]
-) => {
-  return docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-    at: doc.data()?.at.toMillis(),
-  })) as ThumbNail[];
-};
-
-export const FisherYatesRandomize = (thumbnails: ThumbNail[]) => {
-  // Learn more https://www.geeksforgeeks.org/shuffle-a-given-array-using-fisher-yates-shuffle-algorithm/
-  for (let i = thumbnails.length - 1; i > 0; i--) {
-    const j = Math.round(Math.random() * i);
-    [thumbnails[i], thumbnails[j]] = [thumbnails[j], thumbnails[i]];
-  }
-  return thumbnails;
-};
-
-export function shuffleThumbs(thumbnails: ThumbNail[]) {
-  const len = thumbnails.length;
-  const shuffle = [...FisherYatesRandomize(thumbnails), ...FisherYatesRandomize(thumbnails)]; // shuffle and merge
-  if (shuffle[len].id === shuffle[len - 1].id) {
-    shuffle[len] = shuffle[2]; // handle the case where the end of the first array is equal to the start of the second array
-  }
-  return shuffle;
-}
-
-export interface ThumbNail {
-  id: string;
-  at: number;
-  yt_link: string;
-  descr?: string;
-  by?: string;
-  pt: number;
-  seen: number;
-}
-
-
-
-
-
-export interface Public_data {
-  uid?: string;
-  email?: string;
-  username?: string;
-  photoUrl?: string;
-  thumbnails?: string[];
-}
-
-export interface Private_data {
-  email?: string;
-  seen?: boolean;
-  clicked?: boolean;
-}
-
-export type UserData = Public_data & Private_data;
 
 export interface MetaData {
   createdAt: string;

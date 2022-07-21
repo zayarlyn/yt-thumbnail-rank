@@ -1,15 +1,15 @@
 import { Box, VStack, Text } from '@chakra-ui/react';
-import { UserData } from '../lib/firebaseUtils';
+import type { UserDetails } from '../lib/firestoreUtils';
 import ProfileField from './ProfileField';
 import UserPfp from './UserPfp';
 
 interface Props {
-  userData: UserData;
+  userData: UserDetails;
   isPrivate?: boolean;
 }
 
 const UserDetail: React.FC<Props> = ({ userData, isPrivate }) => {
-  const { username: uname, uid, photoUrl, email, clicked, seen } = userData;
+  const { username: uname, uid, photoUrl, email, clicked, seen, thumbnails } = userData;
   const username = uname ?? uid?.slice(0, 9) ?? '';
 
   return (
@@ -55,7 +55,7 @@ const UserDetail: React.FC<Props> = ({ userData, isPrivate }) => {
         <Box pl={2}>
           thumbnails:
           <Text as='span' ml={2} fontWeight='medium'>
-            {7}
+            {thumbnails?.length ?? 0}
           </Text>
         </Box>
       </VStack>

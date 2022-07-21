@@ -12,7 +12,7 @@ import {
   UseToastOptions,
 } from '@chakra-ui/react';
 import { EditIcon, CheckIcon } from '@chakra-ui/icons';
-import { updatePublicUser } from '../lib/firebaseUtils';
+import { updatePublicUser } from '../lib/firestoreUtils';
 
 interface Props {
   username: string;
