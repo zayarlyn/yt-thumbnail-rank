@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { AspectRatio, Box, Spinner } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
 import { parseLinkWithFallback } from '../lib/firebaseUtils';
 
 interface Props {

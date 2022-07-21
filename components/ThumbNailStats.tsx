@@ -7,8 +7,8 @@ import {
   Link as ChakraLink,
 } from '@chakra-ui/react';
 import type { ThumbNail } from '../lib/firestoreUtils';
+import usePublicUser from '../hooks/usePublicUser';
 import Thumbnail from './Thumbnail';
-import useUserData from '../hooks/useUserData';
 import Link from 'next/link';
 import StatsSection from './StatsSection';
 
@@ -18,7 +18,7 @@ interface Props extends ThumbNail {
 }
 
 const ThumbNailStats: React.FC<Props> = ({ yt_link, pt, seen, at, by, idx, isProfile }) => {
-  const publicUser = by ? useUserData({ uid: by }) : null;
+  const publicUser = by ? usePublicUser({ uid: by }) : null;
   const d = new Date(at);
 
   return (

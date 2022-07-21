@@ -133,7 +133,7 @@ const getUserAuth = () => getAuth(app).currentUser;
 
 export const getPublicUser = async (uid: string) => {
   const raw = await getDoc(doc(db, 'users', uid));
-  return { uid, ...raw.data() };
+  return { uid, ...raw.data() } as PublicData;
 };
 
 export const getPrivateUser = async (uid: string) => {
@@ -141,12 +141,12 @@ export const getPrivateUser = async (uid: string) => {
   return { ...raw.data() };
 };
 
-export const updatePublicUser = async (public_data: {[key: string]: string}) => {
-  return setDoc(doc(db, 'users', getUserAuth()!.uid), public_data, { merge: true });
+export const updatePublicUser = async (data: {[key: string]: string}) => {
+  return setDoc(doc(db, 'users', getUserAuth()!.uid), data, { merge: true });
 };
 
-export const updatePrivateUser = async (private_data: UPU) => {
-  return setDoc(doc(db, 'users', getUserAuth()!.uid, 'private', 'profile'), private_data, { merge: true });
+export const updatePrivateUser = async (data: UPU) => {
+  return setDoc(doc(db, 'users', getUserAuth()!.uid, 'private', 'profile'), data, { merge: true });
 };
 
 // main types
@@ -179,7 +179,7 @@ export type ThumbNail = {
   seen: number;
 };
 
-export interface Public_data {
+export interface PublicData {
   uid: string;
   username: string;
   photoUrl?: string;
