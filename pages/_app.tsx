@@ -16,6 +16,7 @@ const breakpoints = {
 };
 
 const progress = new ProgressBar({
+  size: 4,
   color: '#805AD5',
   delay: 100,
 });
