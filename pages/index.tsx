@@ -39,9 +39,9 @@ const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSidePr
         <link rel='icon' href='/favicon.ico' />
       </Head>
       {user === undefined ? (
-       <SpinningLoader /> 
+        <SpinningLoader />
       ) : idx < thumbnails.length ? (
-        <Box as='main' w='full' maxW={['25rem', '25rem', '77rem']} mb={{ lg: 28 }} mx='auto' px={4}>
+        <Box as='main' w='full' maxW={['25rem', '25rem', '77rem']} mb={20} mx='auto' px={4}>
           <Heading textAlign='center' fontSize={['xl', '2xl', '3xl']}>
             Which one would you watch?
           </Heading>
