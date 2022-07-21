@@ -6,7 +6,7 @@ import {
   ChakraProps,
   Link as ChakraLink,
 } from '@chakra-ui/react';
-import { ThumbNail } from '../lib/firebaseUtils';
+import { ThumbNail } from '../lib/firestoreUtils';
 import Thumbnail from './Thumbnail';
 import useUserData from '../hooks/useUserData';
 import Link from 'next/link';
