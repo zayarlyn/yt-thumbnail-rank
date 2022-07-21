@@ -1,5 +1,6 @@
 import { Box, Progress, Text } from '@chakra-ui/react';
 import useThumbnailsFromIds from '../hooks/useThumbnailsFromIds';
+import SpinningLoader from './SpinningLoader';
 import ThumbnailList from './ThumbnailList';
 interface Props {
   thumbIds?: string[];
@@ -19,8 +20,7 @@ const UserThumbnails: React.FC<Props> = ({ thumbIds }) => {
       ) : userThumbs ? (
         <ThumbnailList isProfile thumbnails={userThumbs} />
       ) : (
-        <Progress mt={20} borderRadius='sm' colorScheme='cyan' mx='auto' width='min(90%, 12rem)' size='xs' isIndeterminate />
-      )}
+      <SpinningLoader msg='fetching thumbnails' styling={{mt: 12}}/>)}
     </Box>
   );
 };

@@ -1,5 +1,6 @@
-import { Grid } from '@chakra-ui/react';
+import { Grid, Flex, Text, Spinner } from '@chakra-ui/react';
 import { ThumbNail } from '../lib/firestoreUtils';
+import SpinningLoader from './SpinningLoader';
 import ThumbNailStats from './ThumbNailStats';
 
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
 const ThumbnailList: React.FC<Props> = ({ thumbnails, isProfile }) => {
   return (
     <Grid {...gridProps}>
-      {thumbnails?.map((thumbnail, i) => (
+      {thumbnails.map((thumbnail, i) => (
         <ThumbNailStats isProfile={isProfile} key={thumbnail.id} {...thumbnail} idx={i} />
       ))}
     </Grid>

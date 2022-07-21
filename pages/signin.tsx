@@ -17,6 +17,7 @@ import {
 import type { UseToastOptions } from '@chakra-ui/react';
 import { useAuthStore, AuthStoreType } from '../store/auth';
 import { handleLogin, isSignInLink, sendSignInLink, signInWithLink } from '../lib/firebaseUtils';
+import SpinningLoader from '../components/SpinningLoader';
 
 interface S {
   email: string;
@@ -113,10 +114,7 @@ export default function signin() {
       h='calc(100vh - 60px)'
     >
       {authenticating ? (
-        <Flex mb={20} flexDir='column' alignItems='center'>
-          <Text mb={2}>authenticating</Text>
-          <Spinner />
-        </Flex>
+        <SpinningLoader />
       ) : isSent ? (
         <Box>
           <Text>

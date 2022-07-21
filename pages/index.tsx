@@ -9,6 +9,7 @@ import {
   updateViewcountOfThumbsAndUser,
 } from '../lib/firestoreUtils';
 import ThumbWithDescr from '../components/ThumbWithDescr';
+import SpinningLoader from '../components/SpinningLoader';
 
 const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { user } = useAuthStore() as AuthStoreType;
@@ -37,7 +38,9 @@ const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSidePr
         <title>yt thumbnail rank</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      {user === undefined ? null : idx < thumbnails.length ? (
+      {user === undefined ? (
+       <SpinningLoader /> 
+      ) : idx < thumbnails.length ? (
         <Box as='main' w='full' maxW={['25rem', '25rem', '77rem']} mb={{ lg: 20 }} mx='auto' px={4}>
           <Heading textAlign='center' fontSize={['xl', '2xl', '3xl']}>
             Which one would you watch?

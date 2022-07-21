@@ -29,9 +29,9 @@ const StatsSection: React.FC<Props> = ({ seen, pt }) => {
       {[
         { title: 'Seen', value: seen, Icon: ViewIcon },
         { title: 'Clicked', value: pt, Icon: StarIcon },
-        { title: 'Rating', value: rating.toFixed(2), Icon: ratingIcon },
+        { title: 'Rating', value: rating.toFixed(2)+'%', Icon: ratingIcon },
       ].map(({ title, value, Icon }) => (
-        <Stat>
+        <Stat key={title}>
           <StatLabel display='flex' alignItems='center' columnGap={2}>
             {title} <Icon />
           </StatLabel>
