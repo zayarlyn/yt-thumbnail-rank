@@ -1,5 +1,5 @@
 import { Grid } from '@chakra-ui/react';
-import { ThumbNail } from '../lib/firebaseUtils';
+import { ThumbNail } from '../lib/firestoreUtils';
 import ThumbNailStats from './ThumbNailStats';
 
 interface Props {

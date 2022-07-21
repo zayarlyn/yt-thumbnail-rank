@@ -3,7 +3,11 @@ import type { InferGetServerSidePropsType } from 'next';
 import { useState, useMemo, useEffect } from 'react';
 import { Box, Flex, Heading, Link, Text } from '@chakra-ui/react';
 import { AuthStoreType, useAuthStore } from '../store/auth';
-import { fetchThumbnails, shuffleThumbnails, updateViewcountOfThumbsAndUser } from '../lib/firestoreUtils';
+import {
+  fetchThumbnails,
+  shuffleThumbnails,
+  updateViewcountOfThumbsAndUser,
+} from '../lib/firestoreUtils';
 import ThumbWithDescr from '../components/ThumbWithDescr';
 
 const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
@@ -35,7 +39,7 @@ const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSidePr
       </Head>
       {user === undefined ? null : idx < thumbnails.length ? (
         <Box as='main' w='full' maxW={['25rem', '25rem', '77rem']} mb={{ lg: 20 }} mx='auto' px={4}>
-          <Heading textAlign='center' fontSize={{ sm: '2xl', md: '3xl' }}>
+          <Heading textAlign='center' fontSize={['xl', '2xl', '3xl']}>
             Which one would you watch?
           </Heading>
           <Flex
