@@ -122,6 +122,7 @@ export default function signin() {
             <Text color='teal.400' as='span'>
               {email}.
             </Text>
+            <Text>Please check the spam folder if you don't see one :(</Text>
           </Text>
         </Box>
       ) : (
