@@ -6,6 +6,8 @@ export default function Document() {
       <Head>
         <title>yt-thumbnail-rank</title>
         <meta name="description" content="Find out how charsmatic your thumbnail is"/> 
+        <meta name="keywords" content="Youtube, Thumbnail, Ranking, Side Project"/>
+        <meta name='image' content='/meta-preview.jpg' />
         <link rel='preconnect' href='https://fonts.googleapis.com' />
         <link
           href='https://fonts.googleapis.com/css?family=Inter:100,200,300,regular,500,600,700,800,900'
