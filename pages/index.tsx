@@ -35,7 +35,7 @@ const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSidePr
   return (
     <Box display='grid' placeItems='center' h='calc(100vh - 59px)'>
       <Head>
-        <title>yt thumbnail rank</title>
+        <title>YTR | playground</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
       {user === undefined ? (

@@ -4,6 +4,8 @@ export default function Document() {
   return (
     <Html lang='en'>
       <Head>
+        <title>yt-thumbnail-rank</title>
+        <meta name="description" content="Find out how charsmatic your thumbnail is"/> 
         <link rel='preconnect' href='https://fonts.googleapis.com' />
         <link
           href='https://fonts.googleapis.com/css?family=Inter:100,200,300,regular,500,600,700,800,900'
