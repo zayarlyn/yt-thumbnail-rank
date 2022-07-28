@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app';
 import App, { AppContext } from 'next/app';
 import Router from 'next/router';
+import Head from 'next/head';
 import CoreHeader from '../components/CoreHeader';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import ProgressBar from '@badrap/bar-of-progress';
@@ -21,14 +22,17 @@ const progress = new ProgressBar({
   delay: 100,
 });
 
-Router.events.on("routeChangeStart", progress.start);
-Router.events.on("routeChangeComplete", progress.finish);
-Router.events.on("routeChangeError", progress.finish);
+Router.events.on('routeChangeStart', progress.start);
+Router.events.on('routeChangeComplete', progress.finish);
+Router.events.on('routeChangeError', progress.finish);
 
 function MyApp({ Component, pageProps }: AppProps) {
   const theme = extendTheme({ breakpoints });
   return (
     <AuthProvider>
+      <Head>
+        <title>yt-thumbnail-rank</title>
+      </Head>
       <ChakraProvider theme={theme}>
         <CoreHeader />
         <RightDrawer />

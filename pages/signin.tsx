@@ -116,7 +116,7 @@ export default function signin() {
       {authenticating ? (
         <SpinningLoader />
       ) : isSent ? (
-        <Box>
+        <Box textAlign='center'>
           <Text>
             A sign in link is sent to{' '}
             <Text color='teal.400' as='span'>

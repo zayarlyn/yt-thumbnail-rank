@@ -192,6 +192,6 @@ export interface UserDetails {
   photoUrl?: string;
   thumbnails?: string[];
   email: string;
-  seen: boolean;
-  clicked: boolean;
+  seen: number;
+  clicked: number;
 }

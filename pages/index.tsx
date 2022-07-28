@@ -15,18 +15,19 @@ const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSidePr
   const { user } = useAuthStore() as AuthStoreType;
   const thumbnails = useMemo(() => shuffleThumbnails(raw_thumbs), []);
   const [idx, setIdx] = useState(0);
-
+  
   useEffect(() => {
     if (user === undefined || idx === thumbnails.length) return;
     const getId = (n: number) => thumbnails[n].id;
     updateViewcountOfThumbsAndUser({ thumb1_id: getId(idx), thumb2_id: getId(idx + 1) });
   }, [idx, user]);
-
-  // the following is only for hydration, wtf
-  const [client, setClient] = useState(false);
-  useEffect(() => setClient(true), []);
-  if (!client) return null;
-  //
+  
+  // // the following is only for hydration, wtf
+  // const [client, setClient] = useState(false);
+  // useEffect(() => setClient(true), []);
+  // if (!client) return null;
+  // //
+  
 
   const handleThumbClick = () => {
     setIdx((prev) => prev + 2);

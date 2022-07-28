@@ -1,6 +1,5 @@
-import { Grid, Flex, Text, Spinner } from '@chakra-ui/react';
+import { Grid } from '@chakra-ui/react';
 import { ThumbNail } from '../lib/firestoreUtils';
-import SpinningLoader from './SpinningLoader';
 import ThumbNailStats from './ThumbNailStats';
 
 interface Props {

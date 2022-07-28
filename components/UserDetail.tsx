@@ -1,6 +1,7 @@
-import { Box, VStack, Text } from '@chakra-ui/react';
+import { Box, VStack } from '@chakra-ui/react';
 import type { UserDetails } from '../lib/firestoreUtils';
 import ProfileField from './ProfileField';
+import StatBox from './StatBox';
 import UserPfp from './UserPfp';
 
 interface Props {
@@ -25,39 +26,14 @@ const UserDetail: React.FC<Props> = ({ userData, isPrivate }) => {
         {isPrivate ? (
           <>
             <ProfileField value={username} label='username' />
-            <Box pl={2}>
-              email:
-              <Text as='span' ml={2} fontWeight='medium'>
-                {email}
-              </Text>
-            </Box>
-            <Box pl={2}>
-              clicked:
-              <Text as='span' ml={2} fontWeight='medium'>
-                {clicked}
-              </Text>
-            </Box>
-            <Box pl={2}>
-              seen:
-              <Text as='span' ml={2} fontWeight='medium'>
-                {seen}
-              </Text>
-            </Box>
+            {['email', 'clicked', 'seen'].map((data) => (
+              <StatBox key={data} value={userData[data]} label={data} />
+            ))}
           </>
         ) : (
-          <Box pl={2}>
-            username:
-            <Text as='span' ml={2} fontWeight='medium'>
-              {username}
-            </Text>
-          </Box>
+          <StatBox label='username' value={username} />
         )}
-        <Box pl={2}>
-          thumbnails:
-          <Text as='span' ml={2} fontWeight='medium'>
-            {thumbnails?.length ?? 0}
-          </Text>
-        </Box>
+        <StatBox label='thumbnails' value={thumbnails?.length ?? 0} />
       </VStack>
     </Box>
   );

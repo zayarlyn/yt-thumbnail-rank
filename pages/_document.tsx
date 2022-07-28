@@ -4,7 +4,6 @@ export default function Document() {
   return (
     <Html lang='en'>
       <Head>
-        <title>yt-thumbnail-rank</title>
         <meta name="description" content="Find out how charsmatic your thumbnail is"/> 
         <meta name="keywords" content="Youtube, Thumbnail, Ranking, Side Project"/>
         <meta name='image' content='/meta-preview.jpg' />
