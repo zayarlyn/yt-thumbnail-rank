@@ -12,23 +12,23 @@ import {
   serverTimestamp,
   arrayUnion,
 } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { getAuth, User } from 'firebase/auth';
 import type { QueryDocumentSnapshot, DocumentSnapshot, DocumentData } from 'firebase/firestore';
 import { db, app } from '../firebaseconfig';
 
 // main functions
-export async function updateViewcountOfThumbsAndUser({ thumb1_id, thumb2_id }: UVOTAU) {
+export async function updateViewcountOfThumbsAndUser({ user, thumb1_id, thumb2_id }: UVOTAU) {
   return await Promise.all([
     incrementThumb({ id: thumb1_id, clicked: false }), // thumbanail 1
     incrementThumb({ id: thumb2_id, clicked: false }), // thumbnail 2
-    incrementUser({ clicked: false }), // logged user
+    user ? incrementUser({ user, clicked: false }) : [], // logged user
   ]);
 }
 
-export async function updateClickcountOfThumbsAndUser({ thumb_id }: { thumb_id: string }) {
+export async function updateClickcountOfThumbsAndUser({ user, thumb_id }: UCOTAU) {
   return await Promise.all([
     incrementThumb({ id: thumb_id, clicked: true }), // clicked thumbnail
-    incrementUser({ clicked: true }), // logged user
+    user ? incrementUser({ user, clicked: true }) : [], // logged user
   ]);
 }
 
@@ -88,9 +88,7 @@ const incrementThumb = async ({ id, clicked }: { id: string; clicked: boolean })
   );
 };
 
-const incrementUser = async ({ clicked }: { clicked: boolean }) => {
-  const user = getUserAuth();
-  if (!user) return null; // cancal update if the user isn't logged in
+const incrementUser = async ({ user, clicked }: { user: User; clicked: boolean }) => {
   return setDoc(
     doc(db, 'users', user.uid, 'private', 'profile'),
     { seen: increment(clicked ? 0 : 2), clicked: increment(clicked ? 1 : 0) },
@@ -141,7 +139,7 @@ export const getPrivateUser = async (uid: string) => {
   return { ...raw.data() };
 };
 
-export const updatePublicUser = async (data: {[key: string]: string}) => {
+export const updatePublicUser = async (data: { [key: string]: string }) => {
   return setDoc(doc(db, 'users', getUserAuth()!.uid), data, { merge: true });
 };
 
@@ -158,8 +156,14 @@ type FT = {
 type TTT = QueryDocumentSnapshot<DocumentData>[] | DocumentSnapshot<DocumentData>[];
 
 type UVOTAU = {
+  user: User|null;
   thumb1_id: string;
   thumb2_id: string;
+};
+
+type UCOTAU = {
+  user: User|null;
+  thumb_id: string;
 };
 
 type UT = { yt_link: string; descr?: string };

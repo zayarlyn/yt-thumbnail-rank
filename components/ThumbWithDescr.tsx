@@ -1,24 +1,26 @@
 import { useEffect, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import type { User } from 'firebase/auth';
 import Thumbnail from './Thumbnail';
 import { updateClickcountOfThumbsAndUser } from '../lib/firestoreUtils';
 
 interface Props {
+  user: User|null;
   thumb_id: string;
   yt_link: string;
   descr?: string;
-  onClick: () => void;
+  handleThumbClick: () => void;
 }
-const ThumbWithDescr = ({ thumb_id, yt_link, descr, onClick }: Props) => {
+const ThumbWithDescr = ({ user, thumb_id, yt_link, descr, handleThumbClick }: Props) => {
   const [imgIsLoaded, setImgIsLoaded] = useState(false);
 
   useEffect(() => setImgIsLoaded(false), [thumb_id]);
 
-  const handleClick = async () => {
+  const handleClick = () => {
     if (!imgIsLoaded) return;
-    onClick();
-    updateClickcountOfThumbsAndUser({thumb_id});
+    handleThumbClick();
+    updateClickcountOfThumbsAndUser({user, thumb_id});
   };
 
   return (

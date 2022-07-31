@@ -2,32 +2,30 @@ import Head from 'next/head';
 import type { InferGetServerSidePropsType } from 'next';
 import { useState, useMemo, useEffect } from 'react';
 import { Box, Flex, Heading, Link, Text } from '@chakra-ui/react';
-import { AuthStoreType, useAuthStore } from '../store/auth';
+import { withIronSessionSsr } from 'iron-session/next';
+import { sessionOptions } from '../lib/ironSessionConfig';
 import {
   fetchThumbnails,
   shuffleThumbnails,
   updateViewcountOfThumbsAndUser,
 } from '../lib/firestoreUtils';
 import ThumbWithDescr from '../components/ThumbWithDescr';
-import SpinningLoader from '../components/SpinningLoader';
 
-const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const { user } = useAuthStore() as AuthStoreType;
+const Home = ({ user, raw_thumbs }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const thumbnails = useMemo(() => shuffleThumbnails(raw_thumbs), []);
   const [idx, setIdx] = useState(0);
-  
+
   useEffect(() => {
-    if (user === undefined || idx === thumbnails.length) return;
+    if (idx === thumbnails.length) return;
     const getId = (n: number) => thumbnails[n].id;
-    updateViewcountOfThumbsAndUser({ thumb1_id: getId(idx), thumb2_id: getId(idx + 1) });
-  }, [idx, user]);
-  
+    updateViewcountOfThumbsAndUser({ user, thumb1_id: getId(idx), thumb2_id: getId(idx + 1) });
+  }, [idx]);
+
   // // the following is only for hydration, wtf
   // const [client, setClient] = useState(false);
   // useEffect(() => setClient(true), []);
   // if (!client) return null;
   // //
-  
 
   const handleThumbClick = () => {
     setIdx((prev) => prev + 2);
@@ -39,9 +37,7 @@ const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSidePr
         <title>YTR | playground</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      {user === undefined ? (
-        <SpinningLoader />
-      ) : idx < thumbnails.length ? (
+      {idx < thumbnails.length ? (
         <Box as='main' w='full' maxW={['25rem', '25rem', '77rem']} mb={20} mx='auto' px={4}>
           <Heading textAlign='center' fontSize={['xl', '2xl', '3xl']}>
             Which one would you watch?
@@ -57,7 +53,8 @@ const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSidePr
               const { id, yt_link, descr } = thumbnails[idx + i];
               return (
                 <ThumbWithDescr
-                  onClick={handleThumbClick}
+                  handleThumbClick={handleThumbClick}
+                  user={user}
                   thumb_id={id}
                   yt_link={yt_link}
                   descr={descr}
@@ -89,7 +86,7 @@ const Home = ({ raw_thumbs }: InferGetServerSidePropsType<typeof getServerSidePr
 
 export default Home;
 
-export async function getServerSideProps() {
+export const getServerSideProps = withIronSessionSsr(async ({ req }) => {
   const raw_thumbs = await fetchThumbnails({ type: 'NORM' });
-  return { props: { raw_thumbs } };
-}
+  return { props: { user: req.session.user ?? null, raw_thumbs } };
+}, sessionOptions);
