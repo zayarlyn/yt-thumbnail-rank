@@ -1,7 +1,7 @@
 import { Box, VStack } from '@chakra-ui/react';
-import type { UserDetails } from '../lib/firestoreUtils';
+import type { UserDetails } from '../../lib/firestoreUtils';
 import ProfileField from './ProfileField';
-import StatBox from './StatBox';
+import ProfileStatBox from './ProfileStatBox';
 import UserPfp from './UserPfp';
 
 interface Props {
@@ -27,13 +27,13 @@ const UserDetail: React.FC<Props> = ({ userData, isPrivate }) => {
           <>
             <ProfileField value={username} label='username' />
             {['email', 'clicked', 'seen'].map((data) => (
-              <StatBox key={data} value={userData[data]} label={data} />
+              <ProfileStatBox key={data} value={userData[data]} label={data} />
             ))}
           </>
         ) : (
-          <StatBox label='username' value={username} />
+          <ProfileStatBox label='username' value={username} />
         )}
-        <StatBox label='thumbnails' value={thumbnails?.length ?? 0} />
+        <ProfileStatBox label='thumbnails' value={thumbnails?.length ?? 0} />
       </VStack>
     </Box>
   );

@@ -3,8 +3,8 @@ import { withIronSessionSsr } from 'iron-session/next';
 import { Box, Divider } from '@chakra-ui/react';
 import { sessionOptions } from '../../lib/ironSessionConfig';
 import { getUserDetails } from '../../lib/firestoreUtils';
-import UserDetail from '../../components/UserDetail';
-import UserThumbnails from '../../components/UserThumbnails';
+import UserDetail from '../../components/profile/UserDetail';
+import UserThumbnails from '../../components/profile/UserThumbnails';
 
 const profile = ({ isPrivate, userData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   

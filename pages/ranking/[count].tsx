@@ -1,8 +1,9 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Box, Flex, Grid, Tab, TabList, Tabs } from '@chakra-ui/react';
+import { Box, Flex, Tab, TabList, Tabs } from '@chakra-ui/react';
 import { fetchThumbnails, ThumbNail } from '../../lib/firestoreUtils';
 import ThumbnailList from '../../components/ThumbnailList';
+import Head from 'next/head';
 
 interface SSProps {
   rankings: ThumbNail[];
@@ -20,6 +21,9 @@ const ranking: NextPage<SSProps> = ({ rankings, selected }) => {
       h='calc(100vh - 60px)'
       overflowY='scroll'
     >
+      <Head>
+        <title>leaderboard</title>
+      </Head>
       <Flex
         fontSize={['md', 'lg']}
         fontWeight='medium'
@@ -60,4 +64,3 @@ export async function getServerSideProps({ query }: { query: { count: number } }
 
   return { props: { rankings, selected: (LIMIT / 5) | 0 } };
 }
-

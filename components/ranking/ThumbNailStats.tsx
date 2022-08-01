@@ -6,9 +6,9 @@ import {
   ChakraProps,
   Link as ChakraLink,
 } from '@chakra-ui/react';
-import type { ThumbNail } from '../lib/firestoreUtils';
-import usePublicUser from '../hooks/usePublicUser';
-import Thumbnail from './Thumbnail';
+import type { ThumbNail } from '../../lib/firestoreUtils';
+import usePublicUser from '../../hooks/usePublicUser';
+import Thumbnail from '../Thumbnail';
 import Link from 'next/link';
 import StatsSection from './StatsSection';
 

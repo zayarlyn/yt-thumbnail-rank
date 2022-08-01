@@ -1,7 +1,7 @@
 import { Box, Progress, Text } from '@chakra-ui/react';
-import useThumbnailsFromIds from '../hooks/useThumbnailsFromIds';
-import SpinningLoader from './SpinningLoader';
-import ThumbnailList from './ThumbnailList';
+import useThumbnailsFromIds from '../../hooks/useThumbnailsFromIds';
+import SpinningLoader from '../SpinningLoader';
+import ThumbnailList from '../ThumbnailList';
 interface Props {
   thumbIds?: string[];
 }

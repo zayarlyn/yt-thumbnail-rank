@@ -6,5 +6,5 @@ export default withIronSessionApiRoute(async (req: NextApiRequest, res: NextApiR
   const user = await req.body.user;
   req.session.user = user;
   await req.session.save(); //
-  res.send('The cookie was created');
+  res.status(201).send('The cookie was created');
 }, sessionOptions);

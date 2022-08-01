@@ -5,7 +5,7 @@ interface Props {
   value: string | number;
 }
 
-export default function StatBox({ label, value }: Props) {
+export default function ProfileStatBox({ label, value }: Props) {
   return (
     <Box pl={2}>
       <>

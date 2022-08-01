@@ -21,11 +21,11 @@ const Home = ({ user, raw_thumbs }: InferGetServerSidePropsType<typeof getServer
     updateViewcountOfThumbsAndUser({ user, thumb1_id: getId(idx), thumb2_id: getId(idx + 1) });
   }, [idx]);
 
-  // // the following is only for hydration, wtf
-  // const [client, setClient] = useState(false);
-  // useEffect(() => setClient(true), []);
-  // if (!client) return null;
-  // //
+  // the following is only for hydration, wtf
+  const [client, setClient] = useState(false);
+  useEffect(() => setClient(true), []);
+  if (!client) return null;
+  //
 
   const handleThumbClick = () => {
     setIdx((prev) => prev + 2);

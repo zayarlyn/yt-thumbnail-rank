@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { Text, Editable, Box, EditablePreview, EditableInput, useToast } from '@chakra-ui/react';
 import EditableControls from './EditableControls';
-import { updatePublicUser} from '../lib/firestoreUtils';
+import { updatePublicUser} from '../../lib/firestoreUtils';
 
 interface Props {
   value: string;
