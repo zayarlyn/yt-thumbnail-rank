@@ -10,4 +10,3 @@
 - create an account with email (passwordless sigin in)
 - view profile details of your own and limited details of others
 
-yet to write...
